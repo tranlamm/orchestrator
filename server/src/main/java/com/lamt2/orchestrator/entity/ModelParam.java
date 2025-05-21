@@ -22,4 +22,39 @@ public class ModelParam {
 
     @Field("num_batch_per_epoch")
     private int numBatchPerEpoch;
+
+    public ModelParam() {
+    }
+
+    public int getNumEpoch() {
+        return numEpoch;
+    }
+
+    public void setNumEpoch(int numEpoch) {
+        this.numEpoch = numEpoch;
+    }
+
+    public float getLearningRate() {
+        return learningRate;
+    }
+
+    public void setLearningRate(float learningRate) {
+        this.learningRate = learningRate;
+    }
+
+    public int getBatchSize() {
+        return batchSize;
+    }
+
+    public void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
+    }
+
+    public int getNumBatchPerEpoch() {
+        return numBatchPerEpoch;
+    }
+
+    public void setNumBatchPerEpoch(int numBatchPerEpoch) {
+        this.numBatchPerEpoch = numBatchPerEpoch;
+    }
 }

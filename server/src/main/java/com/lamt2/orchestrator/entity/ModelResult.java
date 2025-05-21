@@ -79,4 +79,39 @@ public class ModelResult {
     public ModelFinalInfo getFinalResult() {
         return finalResult;
     }
+
+    public ModelResult() {
+    }
+
+    public void setModelId(String modelId) {
+        this.modelId = modelId;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setParam(ModelParam param) {
+        this.param = param;
+    }
+
+    public void setLogInterval(int logInterval) {
+        this.logInterval = logInterval;
+    }
+
+    public void setTrainingInfo(List<ModelTrainingInfo> trainingInfo) {
+        this.trainingInfo = trainingInfo;
+    }
+
+    public void setValidationInfo(List<ModelValidationInfo> validationInfo) {
+        this.validationInfo = validationInfo;
+    }
+
+    public void setFinalResult(ModelFinalInfo finalResult) {
+        this.finalResult = finalResult;
+    }
 }

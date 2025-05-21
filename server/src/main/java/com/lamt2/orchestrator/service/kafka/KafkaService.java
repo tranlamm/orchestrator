@@ -2,7 +2,10 @@ package com.lamt2.orchestrator.service.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lamt2.orchestrator.model.kafka.ModelEndData;
 import com.lamt2.orchestrator.model.kafka.ModelInitData;
+import com.lamt2.orchestrator.model.kafka.ModelTrainingData;
+import com.lamt2.orchestrator.model.kafka.ModelValidationData;
 import com.lamt2.orchestrator.service.model_training.ModelTrainingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -24,20 +27,20 @@ public class KafkaService {
     }
 
     @KafkaListener(topics = "${spring.kafka.topic_training}", groupId = "topic_model_train")
-    public void listenModelTraining(String message) {
-        System.out.println("Received message: " + message);
-        // Handle the message (e.g., call service, save to DB)
+    public void listenModelTraining(String message) throws JsonProcessingException {
+        ModelTrainingData modelTrainingData = objectMapper.readValue(message, ModelTrainingData.class);
+        modelTrainingService.receiveModelTrainingData(modelTrainingData);
     }
 
     @KafkaListener(topics = "${spring.kafka.topic_validation}", groupId = "topic_model_validate")
-    public void listenModelValidate(String message) {
-        System.out.println("Received message: " + message);
-        // Handle the message (e.g., call service, save to DB)
+    public void listenModelValidate(String message) throws JsonProcessingException {
+        ModelValidationData modelValidationData = objectMapper.readValue(message, ModelValidationData.class);
+        modelTrainingService.receiveModelValidationData(modelValidationData);
     }
 
     @KafkaListener(topics = "${spring.kafka.topic_end}", groupId = "topic_model_end")
-    public void listenModelEnd(String message) {
-        System.out.println("Received message: " + message);
-        // Handle the message (e.g., call service, save to DB)
+    public void listenModelEnd(String message) throws JsonProcessingException {
+        ModelEndData modelEndData = objectMapper.readValue(message, ModelEndData.class);
+        modelTrainingService.receiveModelEndData(modelEndData);
     }
 }

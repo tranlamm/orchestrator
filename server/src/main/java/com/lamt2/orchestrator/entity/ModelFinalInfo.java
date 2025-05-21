@@ -29,4 +29,19 @@ public class ModelFinalInfo {
     public float getF1Score() {
         return f1Score;
     }
+
+    public ModelFinalInfo() {
+    }
+
+    public void setAccuracy(float accuracy) {
+        this.accuracy = accuracy;
+    }
+
+    public void setLoss(float loss) {
+        this.loss = loss;
+    }
+
+    public void setF1Score(float f1Score) {
+        this.f1Score = f1Score;
+    }
 }

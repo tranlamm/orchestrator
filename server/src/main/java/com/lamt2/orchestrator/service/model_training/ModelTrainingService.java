@@ -2,23 +2,26 @@ package com.lamt2.orchestrator.service.model_training;
 
 import com.lamt2.orchestrator.configuration.redis.RedisConfiguration;
 import com.lamt2.orchestrator.constant.ConstantValue;
+import com.lamt2.orchestrator.entity.*;
 import com.lamt2.orchestrator.model.kafka.ModelEndData;
 import com.lamt2.orchestrator.model.kafka.ModelInitData;
 import com.lamt2.orchestrator.model.kafka.ModelTrainingData;
 import com.lamt2.orchestrator.model.kafka.ModelValidationData;
 import com.lamt2.orchestrator.model.rabbitmq.JobParameter;
+import com.lamt2.orchestrator.repository.ModelResultRepository;
 import com.lamt2.orchestrator.service.rabbitmq.RabbitMQService;
 import com.lamt2.orchestrator.utils.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ModelTrainingService {
@@ -28,6 +31,9 @@ public class ModelTrainingService {
 
     @Autowired
     StringRedisTemplate redisTemplate;
+
+    @Autowired
+    ModelResultRepository modelResultRepository;
 
     public void createNewJob(JobParameter jobParameter) {
         String modelId = RandomUtils.getRandomModelId();
@@ -83,6 +89,32 @@ public class ModelTrainingService {
         redisTemplate.expire(key, Duration.ofDays(7));
     }
 
+    public Map<String, String> getRedisMapData(String key) {
+        if (!redisTemplate.hasKey(key)) return null;
+        Map<Object, Object> mapObject = redisTemplate.opsForHash().entries(key);
+        return mapObject.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toString(), e -> e.getValue().toString()));
+    }
+
+    public Map<String, String> getModelParam(String modelId) {
+        String key = ModelTrainingService.getKeyModelParam(modelId);
+        return getRedisMapData(key);
+    }
+
+    public Map<String, String> getModelInfo(String modelId) {
+        String key = ModelTrainingService.getKeyModelInfo(modelId);
+        return getRedisMapData(key);
+    }
+
+    public Map<String, String> getModelValidationData(String modelId, int epochIdx) {
+        String key = ModelTrainingService.getKeyModelValidationData(modelId, epochIdx);
+        return getRedisMapData(key);
+    }
+
+    public Map<String, String> getModelTrainingData(String modelId, int epochIdx, int batchIdx) {
+        String key = ModelTrainingService.getKeyModelTrainingData(modelId, epochIdx, batchIdx);
+        return getRedisMapData(key);
+    }
+
     public void receiveModelInitData(ModelInitData modelInitData) {
         String modelId = modelInitData.getModelId();
         boolean isExisted = Boolean.TRUE.equals(redisTemplate.opsForSet().isMember(RedisConfiguration.KEY_MODEL_RUNNING_SET, modelId));
@@ -111,6 +143,74 @@ public class ModelTrainingService {
     }
 
     public void receiveModelEndData(ModelEndData modelEndData) {
+        String modelId = modelEndData.getModelId();
+        Map<String, String> modelParam = getModelParam(modelId);
+        Map<String, String> modelInfo = getModelInfo(modelId);
+        if (modelParam == null || modelInfo == null) return;
+        ModelResult modelResult = new ModelResult();
+        modelResult.setModelId(modelId);
+        modelResult.setStartTime(Long.parseLong(modelInfo.get("startTime")));
+        modelResult.setEndTime(modelEndData.getEndTime());
 
+        ModelParam params = new ModelParam();
+        params.setBatchSize(Integer.parseInt(modelParam.get("batchSize")));
+        params.setNumEpoch(Integer.parseInt(modelParam.get("numEpoch")));
+        params.setLearningRate(Float.parseFloat(modelParam.get("learningRate")));
+        int numBatchPerEpoch = Integer.parseInt(modelParam.get("totalBatch"));
+        params.setNumBatchPerEpoch(numBatchPerEpoch);
+        modelResult.setParam(params);
+        int logInterval = Integer.parseInt(modelParam.get("logInterval"));
+        modelResult.setLogInterval(logInterval);
+
+        ModelFinalInfo modelFinalInfo = new ModelFinalInfo();
+        modelFinalInfo.setAccuracy(modelEndData.getAccuracy());
+        modelFinalInfo.setLoss(modelEndData.getLoss());
+        modelFinalInfo.setF1Score(modelEndData.getF1Score());
+        modelResult.setFinalResult(modelFinalInfo);
+
+        List<ModelTrainingInfo> modelTrainingInfoList = new ArrayList<>();
+        List<ModelValidationInfo> modelValidationInfoList = new ArrayList<>();
+
+        int numEpoch = modelResult.getParam().getNumEpoch();
+        for (int i = 0; i < numEpoch; ++i) {
+            int epochIdx = i + 1;
+            for (int j = logInterval; j <= numBatchPerEpoch; j = j + logInterval) {
+                Map<String, String> trainingData = getModelTrainingData(modelId, epochIdx, j);
+                if (trainingData == null) continue;
+                ModelTrainingInfo modelTrainingInfo = new ModelTrainingInfo();
+                modelTrainingInfo.setEpochIdx(Integer.parseInt(trainingData.get("epochIdx")));
+                modelTrainingInfo.setBatchIdx(Integer.parseInt(trainingData.get("batchIdx")));
+                modelTrainingInfo.setLoss(Integer.parseInt(trainingData.get("loss")));
+                modelTrainingInfo.setAccuracy(Integer.parseInt(trainingData.get("accuracy")));
+                modelTrainingInfoList.add(modelTrainingInfo);
+            }
+
+            Map<String, String> validationData = getModelValidationData(modelId, epochIdx);
+            if (validationData == null) continue;
+            ModelValidationInfo modelValidationInfo = new ModelValidationInfo();
+            modelValidationInfo.setEpochIdx(Integer.parseInt(validationData.get("epochIdx")));
+            modelValidationInfo.setAccuracy(Float.parseFloat(validationData.get("accuracy")));
+            modelValidationInfo.setLoss(Float.parseFloat(validationData.get("loss")));
+            modelValidationInfoList.add(modelValidationInfo);
+        }
+
+        modelResult.setTrainingInfo(modelTrainingInfoList);
+        modelResult.setValidationInfo(modelValidationInfoList);
+
+        modelResultRepository.save(modelResult);
+        this.deleteModelFromRedis(modelId, numEpoch, numBatchPerEpoch, logInterval);
+    }
+
+    public void deleteModelFromRedis(String modelId, int numEpoch, int numBatchPerEpoch, int logInterval) {
+        redisTemplate.delete(ModelTrainingService.getKeyModelInfo(modelId));
+        redisTemplate.delete(ModelTrainingService.getKeyModelParam(modelId));
+        for (int i = 0; i < numEpoch; ++i) {
+            int epochIdx = i + 1;
+            for (int j = logInterval; j <= numBatchPerEpoch; j = j + logInterval) {
+                redisTemplate.delete(ModelTrainingService.getKeyModelTrainingData(modelId, epochIdx, j));
+            }
+
+            redisTemplate.delete(ModelTrainingService.getKeyModelValidationData(modelId, epochIdx));
+        }
     }
 }
