@@ -3,10 +3,8 @@ package com.lamt2.orchestrator.service.model_query;
 import com.lamt2.orchestrator.entity.ModelResult;
 import com.lamt2.orchestrator.exception.UnsortableFieldException;
 import com.lamt2.orchestrator.repository.ModelResultRepository;
-import com.lamt2.orchestrator.response.ModelDetailResponse;
-import com.lamt2.orchestrator.response.ModelSummaryResponse;
-import com.lamt2.orchestrator.response.PaginatedModelSummaryResponse;
-import com.lamt2.orchestrator.response.PaginatedModelTrainingSummaryResponse;
+import com.lamt2.orchestrator.response.*;
+import com.lamt2.orchestrator.service.model_training.ModelTrainingService;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +32,7 @@ public class ModelQueryService {
     ModelResultRepository modelResultRepository;
 
     @Autowired
-    StringRedisTemplate stringRedisTemplate;
+    ModelTrainingService modelTrainingService;
 
     public PaginatedModelSummaryResponse getModelSummaryData(int pageIdx, boolean ascending, String sortedField) {
         return modelResultRepository.findAllSortedByDuration(pageIdx, ascending, sortedField);
@@ -75,8 +73,46 @@ public class ModelQueryService {
             throw new UnsortableFieldException(String.format("Field %s un sortable!", sortedField));
         }
 
+        List<ModelTrainingSummaryResponse> list = modelTrainingService.getListModelTrainingSummary();
+        int sortSigned = ascending ? -1 : 1;
+        list.sort((a, b) -> {
+            switch (sortedField) {
+                case "currentLoss":
+                    if (b.getCurrentLoss() == a.getCurrentLoss()) return 0;
+                    return ((b.getCurrentLoss() - a.getCurrentLoss()) * sortSigned > 0) ? 1 : -1;
+                case "currentAccuracy":
+                    if (b.getCurrentAccuracy() == a.getCurrentAccuracy()) return 0;
+                    return ((b.getCurrentAccuracy() - a.getCurrentAccuracy()) * sortSigned > 0) ? 1 : -1;
+                case "startTime":
+                    if (b.getStartTime() == a.getStartTime()) return 0;
+                    return ((b.getStartTime() - a.getStartTime()) * sortSigned > 0) ? 1 : -1;
+                case "totalEpoch":
+                    if (b.getTotalEpoch() == a.getTotalEpoch()) return 0;
+                    return ((b.getTotalEpoch() - a.getTotalEpoch()) * sortSigned > 0) ? 1 : -1;
+                case "progress":
+                    if (b.getProgress() == a.getProgress()) return 0;
+                    return ((b.getProgress() - a.getProgress()) * sortSigned > 0) ? 1 : -1;
+                default:
+                    return 0;
+            }
+        });
+        int total = list.size();
+        int maxPage = (int) Math.ceil((float) total / defaultTrainingPageSize);
+        pageIdx = Math.min(pageIdx, maxPage);
+        int begin = pageIdx * defaultTrainingPageSize;
+        int end = Math.min(begin + defaultTrainingPageSize, total);
+        List<ModelTrainingSummaryResponse> result = list.subList(begin, end);
+        return new PaginatedModelTrainingSummaryResponse(result, pageIdx, maxPage, defaultTrainingPageSize);
     }
 
     public PaginatedModelTrainingSummaryResponse getModelTrainingSummaryData(int pageIdx) {
+        List<ModelTrainingSummaryResponse> list = modelTrainingService.getListModelTrainingSummary();
+        int total = list.size();
+        int maxPage = (int) Math.ceil((float) total / defaultTrainingPageSize);
+        pageIdx = Math.min(pageIdx, maxPage);
+        int begin = pageIdx * defaultTrainingPageSize;
+        int end = Math.min(begin + defaultTrainingPageSize, total);
+        List<ModelTrainingSummaryResponse> result = list.subList(begin, end);
+        return new PaginatedModelTrainingSummaryResponse(result, pageIdx, maxPage, defaultTrainingPageSize);
     }
 }

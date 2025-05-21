@@ -26,4 +26,40 @@ public class ModelTrainingSummaryResponse {
         int numBatchDone = Math.max(this.currentEpochIdx - 1, 0) * this.numBatchPerEpoch + this.currentBatchIdx;
         this.progress = MathUtils.roundFloat((float) numBatchDone / totalBatch);
     }
+
+    public String getModelId() {
+        return modelId;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public int getCurrentEpochIdx() {
+        return currentEpochIdx;
+    }
+
+    public int getCurrentBatchIdx() {
+        return currentBatchIdx;
+    }
+
+    public int getTotalEpoch() {
+        return totalEpoch;
+    }
+
+    public int getNumBatchPerEpoch() {
+        return numBatchPerEpoch;
+    }
+
+    public float getCurrentAccuracy() {
+        return currentAccuracy;
+    }
+
+    public float getCurrentLoss() {
+        return currentLoss;
+    }
+
+    public float getProgress() {
+        return progress;
+    }
 }

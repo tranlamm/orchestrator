@@ -17,11 +17,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -216,6 +212,28 @@ public class ModelTrainingService {
     }
 
     public List<ModelTrainingSummaryResponse> getListModelTrainingSummary() {
-
+        Set<String> listModelId = Optional.ofNullable(redisTemplate.opsForSet().members(RedisConfiguration.KEY_MODEL_RUNNING_SET))
+                .orElse(Collections.emptySet());
+        List<ModelTrainingSummaryResponse> list = new ArrayList<>();
+        for (String modelId : listModelId) {
+            Map<String, String> mapParam = getModelParam(modelId);
+            Map<String, String> mapInfo = getModelInfo(modelId);
+            if (mapParam == null || mapInfo == null) continue;
+            int curEpochIdx = Integer.parseInt(mapInfo.get("currentEpochIdx"));
+            int curBatchIdx = Integer.parseInt(mapInfo.get("currentBatchIdx"));
+            Map<String, String> mapTrainingData = getModelTrainingData(modelId, curEpochIdx, curBatchIdx);
+            ModelTrainingSummaryResponse modelTrainingSummaryResponse = new ModelTrainingSummaryResponse(
+                    modelId,
+                    Long.parseLong(mapInfo.get("startTime")),
+                    curEpochIdx,
+                    curBatchIdx,
+                    Integer.parseInt(mapParam.get("numEpoch")),
+                    Integer.parseInt(mapParam.get("totalBatch")),
+                    Float.parseFloat(mapTrainingData.getOrDefault("accuracy", ConstantValue.STRING_ZERO)),
+                    Float.parseFloat(mapTrainingData.getOrDefault("loss", ConstantValue.STRING_ZERO))
+            );
+            list.add(modelTrainingSummaryResponse);
+        }
+        return list;
     }
 }
