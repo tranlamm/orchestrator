@@ -30,7 +30,7 @@ public class CustomModelResultRepositoryImpl implements CustomModelResultReposit
     @Override
     public PaginatedModelSummaryResponse findAllSortedByDuration(int page, boolean ascending, String sortedField) {
         if (!LIST_SORTABLE.contains(sortedField)) {
-            throw new UnsortableFieldException(String.format("Field %s not found!", sortedField));
+            throw new UnsortableFieldException(String.format("Field %s un sortable!", sortedField));
         }
         ProjectionOperation projection = Aggregation.project("model_id", "start_time", "end_time",
                         "final_result.accuracy", "final_result.loss", "final_result.f1_score")

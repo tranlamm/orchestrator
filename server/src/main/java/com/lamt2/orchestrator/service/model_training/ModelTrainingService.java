@@ -9,8 +9,9 @@ import com.lamt2.orchestrator.model.kafka.ModelTrainingData;
 import com.lamt2.orchestrator.model.kafka.ModelValidationData;
 import com.lamt2.orchestrator.model.rabbitmq.JobParameter;
 import com.lamt2.orchestrator.repository.ModelResultRepository;
+import com.lamt2.orchestrator.response.ModelTrainingSummaryResponse;
 import com.lamt2.orchestrator.service.rabbitmq.RabbitMQService;
-import com.lamt2.orchestrator.utils.RandomUtils;
+import com.lamt2.orchestrator.utils.MathUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class ModelTrainingService {
     ModelResultRepository modelResultRepository;
 
     public void createNewJob(JobParameter jobParameter) {
-        String modelId = RandomUtils.getRandomModelId();
+        String modelId = MathUtils.getRandomModelId();
         jobParameter.setModelId(modelId);
         rabbitMQService.sendJob(jobParameter);
     }
@@ -212,5 +213,9 @@ public class ModelTrainingService {
 
             redisTemplate.delete(ModelTrainingService.getKeyModelValidationData(modelId, epochIdx));
         }
+    }
+
+    public List<ModelTrainingSummaryResponse> getListModelTrainingSummary() {
+
     }
 }
