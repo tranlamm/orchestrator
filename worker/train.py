@@ -46,18 +46,18 @@ def sendKafka(topic, value):
     producer.flush()
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model_id')
-parser.add_argument('--n_epochs')
-parser.add_argument('--batch_size_train')
-parser.add_argument('--learning_rate')
-parser.add_argument('--log_interval')
+parser.add_argument('--modelId')
+parser.add_argument('--epochs')
+parser.add_argument('--batchSize')
+parser.add_argument('--learningRate')
+parser.add_argument('--logIntervals')
 args = parser.parse_args()
 
-model_id = args.model_id
-n_epochs = args.n_epochs
-batch_size_train = args.batch_size_train
-learning_rate = args.learning_rate
-log_interval = args.log_interval
+model_id = args.modelId
+n_epochs = args.epochs
+batch_size_train = args.batchSize
+learning_rate = args.learningRate
+log_interval = args.logIntervals
 batch_size_test = 1000
 
 random_seed = 93
@@ -164,7 +164,8 @@ def sendModelInitInfo(start_time):
     "learning_rate": learning_rate,
     "batch_size": batch_size_train,
     "start_time": start_time,
-    "log_interval": log_interval
+    "log_interval": log_interval,
+    "total_batch": len(train_loader)
   }
   sendKafka(topic_init, json.dumps(data))
   

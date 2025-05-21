@@ -1,0 +1,35 @@
+package com.lamt2.orchestrator.response;
+
+import com.lamt2.orchestrator.entity.ModelParam;
+import com.lamt2.orchestrator.entity.ModelTrainingInfo;
+import com.lamt2.orchestrator.entity.ModelValidationInfo;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.List;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class ModelDetailResponse {
+    private String modelId;
+
+    private ModelParam param;
+
+    private int logInterval;
+
+    private List<ModelTrainingInfo> trainingInfo;
+
+    private List<ModelValidationInfo> validationInfo;
+
+    public ModelDetailResponse(String modelId, ModelParam param, int logInterval, List<ModelTrainingInfo> trainingInfo, List<ModelValidationInfo> validationInfo) {
+        this.modelId = modelId;
+        this.param = param;
+        this.logInterval = logInterval;
+        this.trainingInfo = trainingInfo;
+        this.validationInfo = validationInfo;
+    }
+}

@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@AllArgsConstructor
 public class RabbitMQConfiguration {
     @Value("${spring.rabbitmq.queue_name}")
     public static String QUEUE_NAME;
