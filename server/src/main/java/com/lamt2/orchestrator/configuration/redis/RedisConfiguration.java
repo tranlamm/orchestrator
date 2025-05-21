@@ -16,6 +16,10 @@ public class RedisConfiguration {
     @Value("${spring.redis.port}")
     private int port;
 
+    public static String KEY_MODEL_RUNNING_SET;
+    public static String KEY_MODEL_RUNNING_PARAM;
+    public static String KEY_MODEL_RUNNING_INFO;
+
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(new RedisStandaloneConfiguration(host, port));

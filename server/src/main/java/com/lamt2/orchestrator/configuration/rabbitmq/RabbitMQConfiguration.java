@@ -1,6 +1,5 @@
 package com.lamt2.orchestrator.configuration.rabbitmq;
 
-import lombok.AllArgsConstructor;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
