@@ -3,6 +3,9 @@ package com.lamt2.orchestrator.model.kafka;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ModelInitData {
     @JsonProperty("model_id")
@@ -52,5 +55,16 @@ public class ModelInitData {
 
     public int getTotalBatch() {
         return totalBatch;
+    }
+
+    public Map<String, String> getMapModelParam() {
+        Map<String, String> mapModelParam = new HashMap<>();
+        mapModelParam.put("modelId", modelId);
+        mapModelParam.put("numEpoch", String.valueOf(numEpoch));
+        mapModelParam.put("learningRate", String.valueOf(learningRate));
+        mapModelParam.put("batchSize", String.valueOf(batchSize));
+        mapModelParam.put("logInterval", String.valueOf(logInterval));
+        mapModelParam.put("totalBatch", String.valueOf(totalBatch));
+        return mapModelParam;
     }
 }

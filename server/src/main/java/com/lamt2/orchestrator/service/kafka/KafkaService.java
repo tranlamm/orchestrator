@@ -20,7 +20,7 @@ public class KafkaService {
     @KafkaListener(topics = "${spring.kafka.topic_init}", groupId = "topic_model_init")
     public void listenModelInit(String message) throws JsonProcessingException {
         ModelInitData modelInitData = objectMapper.readValue(message, ModelInitData.class);
-        modelTrainingService.saveModelInitData(modelInitData);
+        modelTrainingService.receiveModelInitData(modelInitData);
     }
 
     @KafkaListener(topics = "${spring.kafka.topic_training}", groupId = "topic_model_train")

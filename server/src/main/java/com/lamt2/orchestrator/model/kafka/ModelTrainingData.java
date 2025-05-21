@@ -3,6 +3,9 @@ package com.lamt2.orchestrator.model.kafka;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ModelTrainingData {
     @JsonProperty("model_id")
@@ -38,5 +41,15 @@ public class ModelTrainingData {
 
     public float getLoss() {
         return loss;
+    }
+
+    public Map<String, String> getMapModelData() {
+        Map<String, String> mapModelData = new HashMap<>();
+        mapModelData.put("modelId", modelId);
+        mapModelData.put("epochIdx", String.valueOf(epochIdx));
+        mapModelData.put("batchIdx", String.valueOf(batchIdx));
+        mapModelData.put("accuracy", String.valueOf(accuracy));
+        mapModelData.put("loss", String.valueOf(loss));
+        return mapModelData;
     }
 }
