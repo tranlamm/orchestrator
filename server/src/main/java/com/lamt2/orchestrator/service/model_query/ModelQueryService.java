@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -114,5 +113,9 @@ public class ModelQueryService {
         int end = Math.min(begin + defaultTrainingPageSize, total);
         List<ModelTrainingSummaryResponse> result = list.subList(begin, end);
         return new PaginatedModelTrainingSummaryResponse(result, pageIdx, maxPage, defaultTrainingPageSize);
+    }
+
+    public ModelDetailResponse getModelTrainingDetailResponse(String modelId) {
+        return modelTrainingService.getModelTrainingDetailResponse(modelId);
     }
 }

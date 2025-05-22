@@ -2,6 +2,7 @@ package com.lamt2.orchestrator.controller;
 
 import com.lamt2.orchestrator.response.ModelDetailResponse;
 import com.lamt2.orchestrator.response.PaginatedModelSummaryResponse;
+import com.lamt2.orchestrator.response.PaginatedModelTrainingSummaryResponse;
 import com.lamt2.orchestrator.service.model_query.ModelQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class ModelQueryController {
     @Autowired
     ModelQueryService modelQueryService;
 
-    @GetMapping("/all")
+    @GetMapping("/result/all")
     public ResponseEntity<PaginatedModelSummaryResponse> getAllModelSummary(
             @RequestParam(defaultValue = "0", required = false) int page,
             @RequestParam(defaultValue = "true", required = false) boolean ascending,
@@ -31,10 +32,30 @@ public class ModelQueryController {
         return new ResponseEntity<>(modelQueryService.getModelSummaryData(page), HttpStatus.OK);
     }
 
-    @GetMapping("/{modelId}")
+    @GetMapping("/result/{modelId}")
     public ResponseEntity<ModelDetailResponse> getModelDetail(
             @PathVariable String modelId
     ) {
         return new ResponseEntity<>(modelQueryService.getModelDetail(modelId), HttpStatus.OK);
+    }
+
+    @GetMapping("/training/all")
+    public ResponseEntity<PaginatedModelTrainingSummaryResponse> getAllModelTrainingSummary(
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "true", required = false) boolean ascending,
+            @RequestParam(required = false) String sortedField
+    ) {
+        if (sortedField != null) {
+            return new ResponseEntity<>(modelQueryService.getModelTrainingSummaryData(page, ascending, sortedField), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(modelQueryService.getModelTrainingSummaryData(page), HttpStatus.OK);
+    }
+
+    @GetMapping("/training/{modelId}")
+    public ResponseEntity<ModelDetailResponse> getModelTrainingDetail(
+            @PathVariable String modelId
+    ) {
+        return new ResponseEntity<>(modelQueryService.getModelTrainingDetailResponse(modelId), HttpStatus.OK);
     }
 }

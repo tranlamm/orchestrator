@@ -9,9 +9,11 @@ import com.lamt2.orchestrator.model.kafka.ModelTrainingData;
 import com.lamt2.orchestrator.model.kafka.ModelValidationData;
 import com.lamt2.orchestrator.model.rabbitmq.JobParameter;
 import com.lamt2.orchestrator.repository.ModelResultRepository;
+import com.lamt2.orchestrator.response.ModelDetailResponse;
 import com.lamt2.orchestrator.response.ModelTrainingSummaryResponse;
 import com.lamt2.orchestrator.service.rabbitmq.RabbitMQService;
 import com.lamt2.orchestrator.utils.MathUtils;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -199,6 +201,7 @@ public class ModelTrainingService {
     }
 
     public void deleteModelFromRedis(String modelId, int numEpoch, int numBatchPerEpoch, int logInterval) {
+        redisTemplate.opsForSet().remove(RedisConfiguration.KEY_MODEL_RUNNING_SET, modelId);
         redisTemplate.delete(ModelTrainingService.getKeyModelInfo(modelId));
         redisTemplate.delete(ModelTrainingService.getKeyModelParam(modelId));
         for (int i = 0; i < numEpoch; ++i) {
@@ -235,5 +238,48 @@ public class ModelTrainingService {
             list.add(modelTrainingSummaryResponse);
         }
         return list;
+    }
+
+    public ModelDetailResponse getModelTrainingDetailResponse(String modelId) {
+        Map<String, String> mapParam = getModelParam(modelId);
+        Map<String, String> mapInfo = getModelInfo(modelId);
+        if (mapParam == null || mapInfo == null) {
+            throw new ResourceNotFoundException("Model not found: " + modelId);
+        }
+        int currentEpochIdx = Integer.parseInt(mapInfo.get("currentEpochIdx"));
+        int currentBatchIdx = Integer.parseInt(mapInfo.get("currentBatchIdx"));
+        int logInterval = Integer.parseInt(mapParam.get("logInterval"));
+        int numBatchPerEpoch = Integer.parseInt(mapParam.get("totalBatch"));
+        List<ModelTrainingInfo> modelTrainingInfoList = new ArrayList<>();
+        List<ModelValidationInfo> modelValidationInfoList = new ArrayList<>();
+        for (int i = 1; i <= currentEpochIdx; ++i) {
+            int maxBatch = i < currentEpochIdx ? numBatchPerEpoch : currentBatchIdx;
+            for (int j = logInterval; j <= maxBatch; j += logInterval) {
+                Map<String, String> mapTrainingData = getModelTrainingData(modelId, i, j);
+                if (mapTrainingData == null) continue;
+                ModelTrainingInfo modelTrainingInfo = new ModelTrainingInfo();
+                modelTrainingInfo.setEpochIdx(i);
+                modelTrainingInfo.setBatchIdx(j);
+                modelTrainingInfo.setAccuracy(Float.parseFloat(mapTrainingData.get("accuracy")));
+                modelTrainingInfo.setLoss(Float.parseFloat(mapTrainingData.get("loss")));
+                modelTrainingInfoList.add(modelTrainingInfo);
+            }
+
+            if (i < currentEpochIdx) {
+                Map<String, String> mapValidationData = getModelValidationData(modelId, i);
+                if (mapValidationData == null) continue;
+                ModelValidationInfo modelValidationInfo = new ModelValidationInfo();
+                modelValidationInfo.setEpochIdx(i);
+                modelValidationInfo.setAccuracy(Float.parseFloat(mapValidationData.get("accuracy")));
+                modelValidationInfo.setLoss(Float.parseFloat(mapValidationData.get("loss")));
+                modelValidationInfoList.add(modelValidationInfo);
+            }
+        }
+        ModelParam modelParam = new ModelParam();
+        modelParam.setBatchSize(Integer.parseInt(mapParam.get("batchSize")));
+        modelParam.setNumEpoch(Integer.parseInt(mapParam.get("numEpoch")));
+        modelParam.setLearningRate(Float.parseFloat(mapParam.get("learningRate")));
+        modelParam.setNumBatchPerEpoch(Integer.parseInt(mapParam.get("totalBatch")));
+        return new ModelDetailResponse(modelId, modelParam, logInterval, modelTrainingInfoList, modelValidationInfoList);
     }
 }
