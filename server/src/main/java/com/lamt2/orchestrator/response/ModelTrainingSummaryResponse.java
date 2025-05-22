@@ -1,8 +1,10 @@
 package com.lamt2.orchestrator.response;
 
 import com.lamt2.orchestrator.utils.MathUtils;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ModelTrainingSummaryResponse {
+    @Schema(description = "Unique identifier model id", example = "001")
     private String modelId;
     private long startTime;
     private int currentEpochIdx;

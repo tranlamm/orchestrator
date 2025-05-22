@@ -1,5 +1,6 @@
 package com.lamt2.orchestrator.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ModelSummaryResponse {
+    @Schema(description = "Unique identifier model id", example = "001")
     private String modelId;
 
     private long startTime;
