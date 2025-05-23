@@ -3,7 +3,6 @@ package com.lamt2.orchestrator.controller;
 import com.lamt2.orchestrator.exception.MissingFieldException;
 import com.lamt2.orchestrator.model.rabbitmq.JobParameter;
 import com.lamt2.orchestrator.service.model_training.ModelTrainingService;
-import com.lamt2.orchestrator.service.rabbitmq.RabbitMQService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
