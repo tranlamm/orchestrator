@@ -31,9 +31,15 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/login", "/logout", "/api-docs/**", "/swagger-ui.html").permitAll()
+                    .requestMatchers(
+                        "/login",
+                        "/logout",
+                        "/api-docs/**",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**"
+                    ).permitAll()
                     .requestMatchers("/api/admin/model/**").hasRole("ADMIN")
-                    .requestMatchers("/api/view/model/**").hasRole("VIEWER")
+                    .requestMatchers("/api/view/model/**", "/home").hasRole("VIEWER")
                     .anyRequest().authenticated()
             )
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

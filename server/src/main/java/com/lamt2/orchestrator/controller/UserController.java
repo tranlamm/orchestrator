@@ -3,6 +3,7 @@ package com.lamt2.orchestrator.controller;
 import com.lamt2.orchestrator.exception.MissingFieldException;
 import com.lamt2.orchestrator.model.security.CustomUserDetails;
 import com.lamt2.orchestrator.request.RequestLogin;
+import com.lamt2.orchestrator.response.BaseResponse;
 import com.lamt2.orchestrator.service.security.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,10 +22,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -55,7 +57,8 @@ public class UserController {
             description = "Wrong username or password"
     )
     @PostMapping("/login")
-    public ResponseEntity<String> login(
+    @ResponseBody
+    public ResponseEntity<BaseResponse> login(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Request login body",
                     required = true,
@@ -91,6 +94,18 @@ public class UserController {
                 .path("/")
                 .build();
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body("Login successfully");
+        Map<String, String> params = new HashMap<>();
+        params.put("redirectUrl", "/home");
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(new BaseResponse(params));
+    }
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
+
+    @GetMapping("/home")
+    public String homePage() {
+        return "home";
     }
 }
