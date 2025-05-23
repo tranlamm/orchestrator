@@ -1,0 +1,114 @@
+body {
+    background-color: #121212;
+}
+
+.login-container {
+    background-color: #1a1a1a;
+    border: 2px solid #ff6600;
+    border-radius: 20px;
+    max-width: 400px;
+    width: 100%;
+}
+
+.text-orange {
+    color: #ff6600;
+}
+
+.btn-orange {
+    background-color: #ff6600;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-orange:hover {
+    background-color: #ffa64d;
+    transform: scale(1.05);
+}
+
+.custom-check {
+    background-color: #1a1a1a;
+    border: 1px solid #ff6600;
+    width: 1.2rem;
+    height: 1.2rem;
+    cursor: pointer;
+}
+
+.custom-check:checked {
+    background-color: #ff6600;
+    border-color: #ff6600;
+    box-shadow: 0 0 0 0.15rem rgba(255, 102, 0, 0.3);
+}
+
+/* Popup Styles */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(30, 30, 30, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    backdrop-filter: blur(2px);
+}
+
+.popup-panel {
+    position: relative;
+    background-color: #1a1a1a;
+    border: 2px solid #ff6600;
+    border-radius: 1rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 0 20px rgba(255, 102, 0, 0.3);
+}
+
+/* Close Button */
+.btn-close-popup {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    color: #ff6600;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-close-popup:hover {
+    transform: scale(1.2);
+    color: #ffa64d;
+}
+
+/* Animations */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeOutScale {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+}
+
+.popup-show {
+    animation: fadeInScale 0.3s ease forwards;
+}
+
+.popup-hide {
+    animation: fadeOutScale 0.3s ease forwards;
+}
