@@ -1,5 +1,5 @@
 /** ________________ DATA ________________ */
-let currentPage = 0;
+let currentPage = 1;
 let currentSortField = null;
 let currentIsAscending = null;
 let mapModelChart = {};
@@ -272,7 +272,7 @@ async function sendRequestJob() {
 }
 
 async function sendRequestData() {
-    let pageIdx = currentPage;
+    let pageIdx = currentPage - 1;
     let sortField = currentSortField;
     let isAscending = currentIsAscending;
     let query = "";
@@ -328,6 +328,11 @@ function saveData(data) {
 }
 
 function refreshPage() {
+    let pageIdx = mapData.pageIdx;
+    let totalPage = mapData.numPage;
+    currentPage = pageIdx + 1;
+    renderPagination(totalPage, currentPage);
+
     let jobContainer = document.getElementById("job_card_container");
     jobContainer.innerHTML = '';
     let listModelId = Object.keys(mapData.info);
@@ -335,11 +340,6 @@ function refreshPage() {
         let card = createJobCard(modelId);
         jobContainer.appendChild(card);
     }
-
-    let pageIdx = mapData.pageIdx;
-    let totalPage = mapData.numPage;
-    currentPage = pageIdx;
-    renderPagination(totalPage, pageIdx);
 }
 
 function createJobCard(modelId) {
@@ -365,15 +365,15 @@ function createJobCard(modelId) {
     const description = document.createElement('div');
     description.classList.add('job-description');
     const spans = [
-        ['acc', 'Accuracy: ' + mapData.info[modelId].currentAccuracy],
-        ['loss', 'Loss: ' + mapData.info[modelId].currentLoss],
-        ['epoch', 'Epoch: ' + mapData.info[modelId].currentEpochIdx + "/" + mapData.info[modelId].totalEpoch],
-        ['batch', 'Batch: ' + mapData.info[modelId].currentBatchIdx + "/" + mapData.info[modelId].numBatchPerEpoch],
-        ['started', 'Started time: ' + formatTimestamp(mapData.info[modelId].startTime)],
+        ['started_time', 'Started time: ' + formatTimestamp(mapData.info[modelId].startTime)],
+        ['ended_time', 'Ended time: ' + formatTimestamp(mapData.info[modelId].endTime)],
+        ['acc', 'Accuracy: ' + mapData.info[modelId].accuracy],
+        ['f1_score', 'F1 score: ' + mapData.info[modelId].f1Score],
+        ['loss', 'Loss: ' + mapData.info[modelId].loss],
+        ['duration', 'Duration: ' + getDurationFormatted(formatTimestamp(mapData.info[modelId].duration), 0)],
     ];
     spans.forEach(arr => {
         const span = document.createElement('span');
-        span.id = "job-description_" + arr[0] + "_" + modelId;
         span.textContent = arr[1];
         description.appendChild(span);
     });
@@ -445,8 +445,9 @@ function refreshModelDetail(modelId) {
         ['Epochs:', mapDataDetails[modelId].param.numEpoch],
         ['Learning Rate:', mapDataDetails[modelId].param.learningRate],
         ['Batch Size:', mapDataDetails[modelId].param.batchSize],
-        ['Accuracy:', mapData.info[modelId].currentAccuracy],
-        ['Loss:', mapData.info[modelId].currentLoss]
+        ['Accuracy:', mapData.info[modelId].accuracy],
+        ['F1 score:', mapData.info[modelId].f1Score],
+        ['Loss:', mapData.info[modelId].loss],
     ];
     detailItems.forEach(([label, value]) => {
         const p = document.createElement('p');

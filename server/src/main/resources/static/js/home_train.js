@@ -1,5 +1,5 @@
 /** ________________ DATA ________________ */
-let currentPage = 0;
+let currentPage = 1;
 let currentSortField = null;
 let currentIsAscending = null;
 let mapModelChart = {};
@@ -304,7 +304,7 @@ async function sendRequestJob() {
 }
 
 async function sendRequestData() {
-    let pageIdx = currentPage;
+    let pageIdx = currentPage - 1;
     let sortField = currentSortField;
     let isAscending = currentIsAscending;
     let query = "";
@@ -360,6 +360,11 @@ function saveData(data) {
 }
 
 function refreshPage() {
+    let pageIdx = mapData.pageIdx;
+    let totalPage = mapData.numPage;
+    currentPage = pageIdx + 1;
+    renderPagination(totalPage, currentPage);
+
     let jobContainer = document.getElementById("job_card_container");
     jobContainer.innerHTML = '';
     let listModelId = Object.keys(mapData.info);
@@ -367,11 +372,6 @@ function refreshPage() {
         let card = createJobCard(modelId);
         jobContainer.appendChild(card);
     }
-
-    let pageIdx = mapData.pageIdx;
-    let totalPage = mapData.numPage;
-    currentPage = pageIdx;
-    renderPagination(totalPage, pageIdx);
 }
 
 function createJobCard(modelId) {
