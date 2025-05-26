@@ -19,7 +19,8 @@ async function sendLogin(event) {
         })
         .then(async response => {
             if (response.status != 200) {
-                const message = await response.text();
+                let message = await response.text();
+                if (!message) message = "Wrong username or password!";
                 const errorMsg = document.getElementById('errorMessage');
                 errorMsg.textContent = message;
                 errorMsg.classList.remove('d-none');
