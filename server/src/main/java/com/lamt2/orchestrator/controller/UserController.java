@@ -104,8 +104,13 @@ public class UserController {
         return "login";
     }
 
-    @GetMapping("/home")
-    public String homePage() {
-        return "home";
+    @GetMapping("/home/train")
+    public String homeTrainPage() {
+        return "home_train";
+    }
+
+    @GetMapping("/home/done")
+    public String homeDonePage() {
+        return "home_done";
     }
 }

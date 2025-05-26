@@ -11,10 +11,6 @@
 <div class="login-container shadow-lg p-5 rounded-4 animate__animated" id="loginCard">
     <h2 class="text-center text-orange mb-4 animate__animated animate__fadeInDown">Welcome Back</h2>
 
-    <div id="errorMessage" class="alert alert-danger d-none animate__animated animate__shakeX">
-        Invalid username or password
-    </div>
-
     <form id="loginForm" onsubmit="return sendLogin(event)">
         <div class="form-group mb-3">
             <label class="text-white">Username</label>
@@ -23,6 +19,10 @@
         <div class="form-group mb-3">
             <label class="text-white">Password</label>
             <input type="password" name="password" class="form-control form-control-lg" required>
+
+            <div id="errorMessage" class="error-message d-none animate__animated animate__shakeX">
+                Invalid username or password
+            </div>
         </div>
         <div class="form-check mb-4 d-flex align-items-center">
             <input class="form-check-input custom-check me-2" type="checkbox" name="remember-me" id="rememberMe">
@@ -30,7 +30,7 @@
                 Remember Me
             </label>
         </div>
-        <button type="submit" class="btn btn-orange w-100 btn-lg mb-2">Login</button>
+        <button type="submit" class="btn custom-login-button w-100 btn-lg mb-2">Login</button>
     </form>
 </div>
 

@@ -12,26 +12,29 @@ async function sendLogin(event) {
     }
 
     try {
-        const response = await fetch('/login', {
+        fetch('/login', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         })
-
-        if (response.status != 200) {
-            const message = await response.text();
-            const errorMsg = document.getElementById('errorMessage');
-            errorMsg.textContent = message
-            errorMsg.classList.remove('d-none');
-            errorMsg.classList.add('animate__shakeX');
-            setTimeout(() => errorMsg.classList.remove('animate__shakeX'), 2000);
-        }
-
-        const result = await response.json();
-        const url = result.params.redirectUrl;
-        window.location.href = url
+        .then(async response => {
+            if (response.status != 200) {
+                const message = await response.text();
+                const errorMsg = document.getElementById('errorMessage');
+                errorMsg.textContent = message;
+                errorMsg.classList.remove('d-none');
+                errorMsg.classList.add('animate__shakeX');
+                setTimeout(() => errorMsg.classList.remove('animate__shakeX'), 2000);
+            } else {
+                const result = await response.json();
+                const url = result.params.redirectUrl;
+                window.location.href = url
+            }
+        })
+        .catch(err => {
+            console.error("Error:", err);
+            alert("Something went wrong");
+        });
     }
     catch (err) {
         console.error("Error:", err);
