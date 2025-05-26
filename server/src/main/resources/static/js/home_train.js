@@ -390,6 +390,16 @@ function createJobCard(modelId) {
     strongId.textContent = 'ID: ' + modelId;
     header.appendChild(strongId);
 
+    // Progress bar
+    const progressContainer = document.createElement('div');
+    progressContainer.className = 'progress';
+    const progressBar = document.createElement('div');
+    progressBar.id = 'progress-bar_' + modelId;
+    progressBar.className = 'progress-bar';
+    progressBar.style.width = mapData.info[modelId].progress + '%';
+    progressBar.textContent = mapData.info[modelId].progress + '%';
+    progressContainer.appendChild(progressBar);
+
     // Job description row
     const row = document.createElement('div');
     row.classList.add('d-flex', 'justify-content-between', 'align-items-center');
@@ -421,6 +431,7 @@ function createJobCard(modelId) {
     row.appendChild(toggleBtn);
 
     topContainer.appendChild(header);
+    topContainer.appendChild(progressContainer);
     topContainer.appendChild(row);
 
     // Detail section
@@ -656,6 +667,16 @@ function receiveModelTrain(data) {
                 ele.textContent = arr[1];
             }
         })
+
+         // Progress bar
+        const progressBar = document.getElementById('progress-bar_' + data.modelId);
+        if (progressBar) {
+            let totalBatch = mapData.info[data.modelId].totalEpoch * mapData.info[data.modelId].numBatchPerEpoch;
+            let numBatchDone = Math.max(mapData.info[data.modelId].currentEpochIdx - 1, 0) * mapData.info[data.modelId].numBatchPerEpoch + mapData.info[data.modelId].currentBatchIdx;
+            let progress = Math.round(numBatchDone / totalBatch * 100) / 100;
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = progress + '%';
+        }
     }
     if (mapDataDetails[data.modelId]) {
         mapDataDetails[data.modelId].trainingInfo.push({

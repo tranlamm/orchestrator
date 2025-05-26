@@ -11,7 +11,7 @@ public class MathUtils {
 
     public static float roundFloat(float value) {
         return new BigDecimal(Float.toString(value))
-                .setScale(5, RoundingMode.HALF_UP)
+                .setScale(2, RoundingMode.HALF_UP)
                 .floatValue();
     }
 }

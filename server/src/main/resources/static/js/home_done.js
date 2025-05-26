@@ -5,32 +5,10 @@ let currentIsAscending = null;
 let mapModelChart = {};
 let mapData = {};
 let mapDataDetails = {};
-let stompClient = null;
 
 /** ________________ CHANGE PAGE ________________ */
-function viewFinishedJob() {
-    window.location.href = '/home_done';
-}
-
-/** ________________ SHOW POPUP ________________ */
-function showPopup() {
-    document.getElementById('popupOverlay').classList.remove('d-none');
-}
-
-function hidePopup() {
-    const popupOverlay = document.getElementById('popupOverlay');
-    const popupForm = popupOverlay.querySelector('.popup-form');
-
-    // Add hide animation class
-    popupForm.classList.add('popupHide');
-    popupOverlay.classList.add('popupOverlayHide'); // fade out overlay
-
-    // After animation ends, hide overlay and reset class
-    popupForm.addEventListener('animationend', () => {
-        popupOverlay.classList.add('d-none');
-        popupForm.classList.remove('popupHide');
-        popupOverlay.classList.remove('popupOverlayHide');
-    }, { once: true });
+function viewTrainingJob() {
+    window.location.href = '/home_train';
 }
 
 /** ________________ SHOW SORT DROPDOWN ________________ */
@@ -260,22 +238,12 @@ function drawCharts(accCanvas, lossCanvas, modelId, newData) {
 
 /** ________________ FIRST LOAD ________________ */
 document.addEventListener('DOMContentLoaded', () => {
-    const popupOverlay = document.getElementById('popupOverlay');
-    const popupForm = document.querySelector('.popup-form');
-
-    popupOverlay.addEventListener('click', (e) => {
-        if (!popupForm.contains(e.target)) {
-            hidePopup();
-        }
-    });
-
     sendRequestJob().then(r => refreshPage());
-    registerWebsocketInfo();
 });
 
 async function sendRequestJob() {
     try {
-        fetch('/api/view/model/training/all', {
+        fetch('/api/view/model/result/all', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         })
@@ -318,7 +286,7 @@ async function sendRequestData() {
         query = "?page=" + pageIdx;
     }
     try {
-        fetch('/api/view/model/training/all' + query, {
+        fetch('/api/view/model/result/all' + query, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         })
@@ -575,7 +543,7 @@ function getChartData(trainingInfo, validationInfo, logInterval, numBatchPerEpoc
 
 async function sendRequestModelDetail(modelId) {
     try {
-        fetch('/api/view/model/training/' + modelId, {
+        fetch('/api/view/model/result/' + modelId, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         })
@@ -603,93 +571,6 @@ async function sendRequestModelDetail(modelId) {
 
 function saveDataDetail(data) {
     mapDataDetails[data.modelId] = data;
-}
-
-function registerWebsocketInfo() {
-    const socket = new SockJS('/ws');
-    stompClient = Stomp.over(socket);
-    stompClient.connect({}, (frame) => {
-        console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/model_init_data', (message) => {
-            const msg = JSON.parse(message.body);
-            receiveModelInit(msg);
-        });
-
-        stompClient.subscribe('/topic/model_training_data', (message) => {
-            const msg = JSON.parse(message.body);
-            receiveModelTrain(msg);
-        });
-
-        stompClient.subscribe('/topic/model_validation_data', (message) => {
-            const msg = JSON.parse(message.body);
-            receiveModelValidation(msg);
-        });
-
-        stompClient.subscribe('/topic/model_end_data', (message) => {
-            const msg = JSON.parse(message.body);
-            receiveModelEnd(msg);
-        });
-    });
-}
-
-function receiveModelInit(data) {
-    saveData(data);
-    refreshPage();
-}
-
-function receiveModelTrain(data) {
-    if (mapData.info[data.modelId]) {
-        mapData.info[data.modelId].currentEpochIdx = Math.max(mapData.info[data.modelId].currentEpochIdx, data.epochIdx);
-        mapData.info[data.modelId].currentBatchIdx = Math.max(mapData.info[data.modelId].currentBatchIdx, data.batchIdx);
-        mapData.info[data.modelId].currentAccuracy = data.accuracy;
-        mapData.info[data.modelId].currentLoss = data.loss;
-
-        const spans = [
-            ['acc', 'Accuracy: ' + mapData.info[data.modelId].currentAccuracy],
-            ['loss', 'Loss: ' + mapData.info[data.modelId].currentLoss],
-            ['epoch', 'Epoch: ' + mapData.info[data.modelId].currentEpochIdx + "/" + mapData.info[data.modelId].totalEpoch],
-            ['batch', 'Batch: ' + mapData.info[data.modelId].currentBatchIdx + "/" + mapData.info[data.modelId].numBatchPerEpoch],
-        ];
-        spans.forEach(arr => {
-            const ele = document.getElementById('job-description_' + arr[0] + "_" + data.modelId);
-            if (ele) {
-                ele.textContent = arr[1];
-            }
-        })
-    }
-    if (mapDataDetails[data.modelId]) {
-        mapDataDetails[data.modelId].trainingInfo.push({
-            epochIdx: data.epochIdx,
-            batchIdx: data.batchIdx,
-            accuracy: data.accuracy,
-            loss: data.loss
-        })
-        const detailEle = document.getElementById("job-details_" + data.modelId);
-        if (detailEle && !detailEle.classList.contains('d-none')) {
-            refreshModelDetail(data.modelId);
-        }
-    }
-}
-
-function receiveModelValidation(data) {
-    if (mapDataDetails[data.modelId]) {
-        mapDataDetails[data.modelId].validationInfo.push({
-            epochIdx: data.epochIdx,
-            accuracy: data.accuracy,
-            loss: data.loss
-        })
-        const detailEle = document.getElementById("job-details_" + data.modelId);
-        if (detailEle && !detailEle.classList.contains('d-none')) {
-            refreshModelDetail(data.modelId);
-        }
-    }
-}
-
-function receiveModelEnd(data) {
-    const ele = document.getElementById('job-card_' + data.modelId);
-    if (ele) {
-        ele.remove();
-    }
 }
 
 function formatNumber(n) {
