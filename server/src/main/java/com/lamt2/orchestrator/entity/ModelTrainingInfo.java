@@ -21,9 +21,6 @@ public class ModelTrainingInfo {
 
     private float loss;
 
-    public ModelTrainingInfo() {
-    }
-
     public int getEpochIdx() {
         return epochIdx;
     }

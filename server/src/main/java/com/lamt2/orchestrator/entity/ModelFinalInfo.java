@@ -30,9 +30,6 @@ public class ModelFinalInfo {
         return f1Score;
     }
 
-    public ModelFinalInfo() {
-    }
-
     public void setAccuracy(float accuracy) {
         this.accuracy = accuracy;
     }

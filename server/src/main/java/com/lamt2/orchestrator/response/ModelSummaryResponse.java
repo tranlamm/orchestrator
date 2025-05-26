@@ -26,14 +26,4 @@ public class ModelSummaryResponse {
     private float f1Score;
 
     private long duration;
-
-    public ModelSummaryResponse(String modelId, long startTime, long endTime, float accuracy, float loss, float f1Score, long duration) {
-        this.modelId = modelId;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.accuracy = accuracy;
-        this.loss = loss;
-        this.f1Score = f1Score;
-        this.duration = duration;
-    }
 }

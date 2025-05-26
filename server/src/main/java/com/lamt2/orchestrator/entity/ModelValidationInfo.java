@@ -41,7 +41,4 @@ public class ModelValidationInfo {
     public void setLoss(float loss) {
         this.loss = loss;
     }
-
-    public ModelValidationInfo() {
-    }
 }

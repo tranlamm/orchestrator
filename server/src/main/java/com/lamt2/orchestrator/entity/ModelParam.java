@@ -23,9 +23,6 @@ public class ModelParam {
     @Field("num_batch_per_epoch")
     private int numBatchPerEpoch;
 
-    public ModelParam() {
-    }
-
     public int getNumEpoch() {
         return numEpoch;
     }

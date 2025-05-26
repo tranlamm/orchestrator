@@ -80,9 +80,6 @@ public class ModelResult {
         return finalResult;
     }
 
-    public ModelResult() {
-    }
-
     public void setModelId(String modelId) {
         this.modelId = modelId;
     }

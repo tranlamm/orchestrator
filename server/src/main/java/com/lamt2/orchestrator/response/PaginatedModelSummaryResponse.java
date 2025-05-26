@@ -16,11 +16,4 @@ public class PaginatedModelSummaryResponse {
     private int pageIdx;
     private int numPage;
     private int sizePerPage;
-
-    public PaginatedModelSummaryResponse(List<ModelSummaryResponse> results, int pageIdx, int numPage, int sizePerPage) {
-        this.results = results;
-        this.pageIdx = pageIdx;
-        this.numPage = numPage;
-        this.sizePerPage = sizePerPage;
-    }
 }

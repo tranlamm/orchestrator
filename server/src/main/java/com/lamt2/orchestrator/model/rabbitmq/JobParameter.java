@@ -1,13 +1,11 @@
 package com.lamt2.orchestrator.model.rabbitmq;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 public class JobParameter {
     @NotNull(message = "Epoch is required")
     private Integer epochs;

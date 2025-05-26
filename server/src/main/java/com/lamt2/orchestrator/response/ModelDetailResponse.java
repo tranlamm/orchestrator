@@ -26,12 +26,4 @@ public class ModelDetailResponse {
     private List<ModelTrainingInfo> trainingInfo;
 
     private List<ModelValidationInfo> validationInfo;
-
-    public ModelDetailResponse(String modelId, ModelParam param, int logInterval, List<ModelTrainingInfo> trainingInfo, List<ModelValidationInfo> validationInfo) {
-        this.modelId = modelId;
-        this.param = param;
-        this.logInterval = logInterval;
-        this.trainingInfo = trainingInfo;
-        this.validationInfo = validationInfo;
-    }
 }
