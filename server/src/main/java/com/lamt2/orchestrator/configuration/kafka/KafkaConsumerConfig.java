@@ -17,9 +17,9 @@ import java.util.Map;
 @EnableKafka
 public class KafkaConsumerConfig {
     @Value("${spring.kafka.host}")
-    public static String HOST;
+    public String HOST;
     @Value("${spring.kafka.port}")
-    public static String PORT;
+    public String PORT;
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
