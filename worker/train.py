@@ -11,6 +11,9 @@ from enum import Enum
 from sklearn.metrics import f1_score
 from datetime import datetime
 import time
+import io
+import gridfs
+from pymongo import MongoClient
 
 class OPERATION_MODE(Enum):
     TRAIN = 1
@@ -20,7 +23,8 @@ class OPERATION_MODE(Enum):
 def loadConfig():
     config = configparser.ConfigParser()
     config.read('config.ini')
-    global host, port, topic_init, topic_training, topic_validation, topic_end, producer
+    global host, port, topic_init, topic_training, topic_validation, topic_end, \
+    producer, hostMongo, portMongo, usenameMongo, passwordMongo, databaseMongo, collectionMongo
 
     host = config['kafka']['host']
     port = int(config['kafka']['port'])
@@ -32,6 +36,13 @@ def loadConfig():
         'bootstrap.servers': f"{host}:{port}"
     }
     producer = Producer(conf)
+
+    hostMongo = config['mongodb']['host']
+    portMongo = int(config['mongodb']['port'])
+    usenameMongo = config['mongodb']['username']
+    passwordMongo = config['mongodb']['password']
+    databaseMongo = config['mongodb']['database']
+    collectionMongo = config['mongodb']['collection']
 
 loadConfig()
 
@@ -212,7 +223,25 @@ def endTrain():
   timestamp_seconds = int(time.time())
   loss, acc, f1 = evaluate(test_loader)
   sendModelEndInfo(timestamp_seconds, acc, loss, f1)
+
+def saveModel():
+  # Serialize
+  buffer = io.BytesIO()
+  torch.save(network.state_dict(), buffer)
+  buffer.seek(0)
+
+  # Create the MongoDB URI with authentication
+  uri = f"mongodb://{usenameMongo}:{passwordMongo}@{hostMongo}:{portMongo}/{databaseMongo}"
+
+  # Connect to MongoDB
+  client = MongoClient(uri)
+  db = client[databaseMongo]
+  fs = gridfs.GridFS(db, collection=collectionMongo)
+
+  # Save to GridFS
+  fs.put(buffer.getvalue(), filename=f"model_{model_id}_net.pt", contentType="application/octet-stream")
   
 initTrain()
 processTrain()
 endTrain()
+saveModel()
