@@ -2,10 +2,12 @@ package com.lamt2.orchestrator.model.kafka;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ModelInitData {
     @JsonProperty("model_id")
