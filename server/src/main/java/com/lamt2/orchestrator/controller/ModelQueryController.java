@@ -4,6 +4,8 @@ import com.lamt2.orchestrator.response.ModelDetailResponse;
 import com.lamt2.orchestrator.response.PaginatedModelSummaryResponse;
 import com.lamt2.orchestrator.response.PaginatedModelTrainingSummaryResponse;
 import com.lamt2.orchestrator.service.model_query.ModelQueryService;
+import com.mongodb.client.gridfs.GridFSBucket;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,10 +13,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.ByteArrayOutputStream;
 
 @Tag(name = "User model api", description = "Operation to query model result")
 @SecurityRequirement(name = "bearerAuth")
@@ -22,7 +27,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/view/model")
 public class ModelQueryController {
     @Autowired
-    ModelQueryService modelQueryService;
+    public ModelQueryService modelQueryService;
+
+    @Autowired
+    public GridFSBucket gridFSBucket;
 
     @Operation(
             summary = "Get all model finished result",
@@ -164,5 +172,40 @@ public class ModelQueryController {
             @PathVariable String modelId
     ) {
         return new ResponseEntity<>(modelQueryService.getModelTrainingDetailResponse(modelId), HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Download model",
+            description = "Download the finished model"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Model downloaded successfully"
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Model not found"
+    )
+    @GetMapping("/download/{modelId}")
+    public ResponseEntity<byte[]> downloadModel(
+            @Parameter(
+                    name = "model id",
+                    description = "id of model"
+            )
+            @PathVariable String modelId
+    ) {
+        GridFSFile file = gridFSBucket.find(new Document("filename", String.format("model_%s_net.pt", modelId))).first();
+
+        if (file == null) {
+            throw new ResourceNotFoundException("Model not found!");
+        }
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        gridFSBucket.downloadToStream(file.getObjectId(), outputStream);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDisposition(ContentDisposition.attachment().filename(file.getFilename()).build());
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
     }
 }
