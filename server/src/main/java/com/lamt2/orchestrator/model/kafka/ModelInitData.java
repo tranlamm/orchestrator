@@ -69,4 +69,17 @@ public class ModelInitData {
         mapModelParam.put("totalBatch", String.valueOf(totalBatch));
         return mapModelParam;
     }
+
+    @Override
+    public String toString() {
+        return "ModelInitData{" +
+                "modelId='" + modelId + '\'' +
+                ", numEpoch=" + numEpoch +
+                ", learningRate=" + learningRate +
+                ", batchSize=" + batchSize +
+                ", startTime=" + startTime +
+                ", logInterval=" + logInterval +
+                ", totalBatch=" + totalBatch +
+                '}';
+    }
 }

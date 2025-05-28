@@ -8,8 +8,10 @@ import com.lamt2.orchestrator.service.kafka.KafkaService;
 import com.lamt2.orchestrator.service.model_query.ModelQueryService;
 import com.lamt2.orchestrator.service.model_training.ModelTrainingService;
 import com.lamt2.orchestrator.service.websocket.WebSocketService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -81,7 +83,12 @@ public class KafkaServiceTest {
         Thread.sleep(10000);
 
         // Verify that mock service received the call
-        Mockito.verify(modelTrainingService, Mockito.atLeastOnce()).receiveModelInitData(Mockito.any());
+        ArgumentCaptor<ModelInitData> captor = ArgumentCaptor.forClass(ModelInitData.class);
+        Mockito.verify(modelTrainingService, Mockito.atLeastOnce()).receiveModelInitData(captor.capture());
+        Assertions.assertEquals(captor.getValue().getLearningRate(), modelInitData.getLearningRate());
+        System.out.println("_____TESTING_____");
+        System.out.println(captor.getValue().toString());
+
         Mockito.verify(webSocketService, Mockito.atLeastOnce()).notifyModelInitData(Mockito.any());
         Mockito.verify(modelQueryService, Mockito.atLeastOnce()).getModelTrainingSummaryData(Mockito.eq(0));
     }
