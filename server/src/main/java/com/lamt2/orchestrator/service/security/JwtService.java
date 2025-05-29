@@ -4,10 +4,12 @@ import com.lamt2.orchestrator.model.security.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,7 @@ public class JwtService {
     private String secret;
 
     public String generateToken(CustomUserDetails userDetail, Long duration) {
+        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", userDetail.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
         return Jwts.builder()
@@ -27,7 +30,7 @@ public class JwtService {
                 .setSubject(userDetail.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + duration))
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -52,6 +55,11 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody();
+        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

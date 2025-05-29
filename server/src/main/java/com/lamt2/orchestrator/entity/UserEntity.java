@@ -21,7 +21,7 @@ public class UserEntity {
     private String username;
 
     @NotNull
-    @Size(min = 6, max = 50)
+    @Size(min = 6, max = 255)
     private String password;
 
     @Transient

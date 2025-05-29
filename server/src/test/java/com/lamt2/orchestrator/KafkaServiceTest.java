@@ -76,7 +76,7 @@ public class KafkaServiceTest {
 
     @Test
     public void testKafkaService() throws InterruptedException, JsonProcessingException {
-        ModelInitData modelInitData = new ModelInitData("123", 2, 0.0015, 64, System.currentTimeMillis(), 10, 1000);
+        ModelInitData modelInitData = new ModelInitData("123", 2, 0.0015f, 64, System.currentTimeMillis(), 10, 1000);
         String message = objectMapper.writeValueAsString(modelInitData);
         kafkaTemplate.send("topic_model_init", message);
         // Sleep to allow listener to process

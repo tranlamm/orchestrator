@@ -50,7 +50,7 @@ public class ModelQueryControllerTest {
     @Test
     public void testModelQuery() throws Exception {
         PaginatedModelSummaryResponse paginatedModelSummaryResponse = new PaginatedModelSummaryResponse();
-        ModelSummaryResponse modelSummaryResponse = new ModelSummaryResponse("abc", 1748484288828L, 1748484288928L, 98.99, 0.0012, 94.59, 1000L);
+        ModelSummaryResponse modelSummaryResponse = new ModelSummaryResponse("abc", 1748484288828L, 1748484288928L, 98.99f, 0.0012f, 94.59f, 1000L);
         paginatedModelSummaryResponse.setNumPage(1);
         paginatedModelSummaryResponse.setPageIdx(0);
         paginatedModelSummaryResponse.setSizePerPage(1);
