@@ -22,7 +22,7 @@ public class ModelQueryService {
     @Value("${spring.mongodb.model_result.page_size}")
     private int defaultPageSize;
 
-    @Value("${spring.redis.model_training.page_size")
+    @Value("${spring.redis.model_training.page_size}")
     private int defaultTrainingPageSize;
 
     private static final List<String> LIST_MODEL_TRAINING_SORTABLE_FIELD = Arrays.asList("currentLoss", "currentAccuracy", "startTime", "progress", "totalEpoch");

@@ -28,28 +28,28 @@ public class KafkaService {
     @Autowired
     private ModelQueryService modelQueryService;
 
-    @KafkaListener(topics = "${spring.kafka.topic_init}", groupId = "topic_model_init")
+    @KafkaListener(topics = "topic_model_init", groupId = "topic_model_init")
     public void listenModelInit(String message) throws JsonProcessingException {
         ModelInitData modelInitData = objectMapper.readValue(message, ModelInitData.class);
         modelTrainingService.receiveModelInitData(modelInitData);
         webSocketService.notifyModelInitData(modelQueryService.getModelTrainingSummaryData(0));
     }
 
-    @KafkaListener(topics = "${spring.kafka.topic_training}", groupId = "topic_model_train")
+    @KafkaListener(topics = "topic_model_training", groupId = "topic_model_train")
     public void listenModelTraining(String message) throws JsonProcessingException {
         ModelTrainingData modelTrainingData = objectMapper.readValue(message, ModelTrainingData.class);
         modelTrainingService.receiveModelTrainingData(modelTrainingData);
         webSocketService.notifyModelTrainingData(modelTrainingData);
     }
 
-    @KafkaListener(topics = "${spring.kafka.topic_validation}", groupId = "topic_model_validate")
+    @KafkaListener(topics = "topic_model_validation", groupId = "topic_model_validate")
     public void listenModelValidate(String message) throws JsonProcessingException {
         ModelValidationData modelValidationData = objectMapper.readValue(message, ModelValidationData.class);
         modelTrainingService.receiveModelValidationData(modelValidationData);
         webSocketService.notifyModelValidationData(modelValidationData);
     }
 
-    @KafkaListener(topics = "${spring.kafka.topic_end}", groupId = "topic_model_end")
+    @KafkaListener(topics = "topic_model_end", groupId = "topic_model_end")
     public void listenModelEnd(String message) throws JsonProcessingException {
         ModelEndData modelEndData = objectMapper.readValue(message, ModelEndData.class);
         modelTrainingService.receiveModelEndData(modelEndData);

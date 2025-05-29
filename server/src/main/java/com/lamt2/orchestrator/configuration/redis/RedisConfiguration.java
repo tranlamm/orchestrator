@@ -17,16 +17,11 @@ public class RedisConfiguration {
     @Value("${spring.redis.port}")
     private int port;
 
-    @Value("${spring.redis.prefix.set_model_running}")
-    public static String KEY_MODEL_RUNNING_SET;
-    @Value("${spring.redis.prefix.model_param}")
-    public static String KEY_PREFIX_MODEL_RUNNING_PARAM;
-    @Value("${spring.redis.prefix.model_info}")
-    public static String KEY_PREFIX_MODEL_RUNNING_INFO;
-    @Value("${spring.redis.prefix.model_train}")
-    public static String KEY_PREFIX_MODEL_RUNNING_TRAIN;
-    @Value("${spring.redis.prefix.model_validation}")
-    public static String KEY_PREFIX_MODEL_RUNNING_VALIDATION;
+    public static String KEY_MODEL_RUNNING_SET = "model_running_set";
+    public static String KEY_PREFIX_MODEL_RUNNING_PARAM = "model_param";
+    public static String KEY_PREFIX_MODEL_RUNNING_INFO = "model_info";
+    public static String KEY_PREFIX_MODEL_RUNNING_TRAIN = "model_train";
+    public static String KEY_PREFIX_MODEL_RUNNING_VALIDATION = "model_validation";
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {

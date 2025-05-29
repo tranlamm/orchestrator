@@ -15,6 +15,7 @@ import com.lamt2.orchestrator.service.rabbitmq.RabbitMQService;
 import com.lamt2.orchestrator.utils.MathUtils;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class ModelTrainingService {
-
     @Autowired
     RabbitMQService rabbitMQService;
 
