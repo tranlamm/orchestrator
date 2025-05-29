@@ -248,14 +248,11 @@ async function sendRequestJob() {
             headers: { 'Content-Type': 'application/json' },
         })
         .then(async response => {
-            if (response.status == 404) {
+            if (response.status != 200) {
                 let message = await response.text();
                 console.error("Error:", message);
-                alert("Unsupported sort field");
             }
-            else if (response.status != 200) {
-                window.location.href = '/login';
-            } else {
+            else {
                 const result = await response.json();
                 saveData(result);
             }

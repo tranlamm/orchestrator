@@ -119,7 +119,7 @@ public class ModelQueryController {
             responseCode = "404",
             description = "Model training result not found"
     )
-    @GetMapping("/training/all")
+    @GetMapping(value = "/training/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PaginatedModelTrainingSummaryResponse> getAllModelTrainingSummary(
             @Parameter(
                     name = "page idx",
@@ -144,7 +144,8 @@ public class ModelQueryController {
             return new ResponseEntity<>(modelQueryService.getModelTrainingSummaryData(page, ascending, sortedField), HttpStatus.OK);
         }
 
-        return new ResponseEntity<>(modelQueryService.getModelTrainingSummaryData(page), HttpStatus.OK);
+        PaginatedModelTrainingSummaryResponse response = modelQueryService.getModelTrainingSummaryData(page);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Operation(

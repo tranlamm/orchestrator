@@ -42,7 +42,7 @@ public class SecurityConfig {
                         "/js/**"
                     ).permitAll()
                     .requestMatchers("/api/admin/model/**").hasRole("ADMIN")
-                    .requestMatchers("/api/view/model/**", "/home/**").hasRole("VIEWER")
+                    .requestMatchers("/api/view/model/training/**", "/api/view/model/result/**", "/home/**").hasRole("VIEWER")
                     .anyRequest().authenticated()
             )
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

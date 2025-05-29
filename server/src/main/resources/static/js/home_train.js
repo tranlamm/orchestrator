@@ -65,7 +65,7 @@ function sortBy(field) {
     dropdown.classList.add('d-none');
     if (currentSortField == field) return;
     currentSortField = field;
-    sendRequestData().then(r => refreshPage());
+    sendRequestData();
 }
 
 function setIsIncrease(isAscending) {
@@ -73,7 +73,7 @@ function setIsIncrease(isAscending) {
     dropdown.classList.add('d-none');
     if (currentIsAscending == isAscending) return;
     currentIsAscending = isAscending;
-    sendRequestData().then(r => refreshPage());
+    sendRequestData();
 }
 
 /** ________________ SHOW MODEL DETAIL ________________ */
@@ -88,7 +88,7 @@ function toggleDetails(button) {
         if (mapDataDetails[modelId] != null) {
             refreshModelDetail(modelId);
         }
-        sendRequestModelDetail(modelId).then(r => refreshModelDetail(modelId));
+        sendRequestModelDetail(modelId);
     } else {
         detailsDiv.classList.add('d-none');
         button.textContent = '▼';
@@ -99,7 +99,7 @@ function toggleDetails(button) {
 function changePage(page) {
     if (currentPage == page) return;
     currentPage = page;
-    sendRequestData().then(r => refreshPage());
+    sendRequestData();
 }
 
 function renderPagination(totalPages, currentPage) {
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    sendRequestJob().then(r => refreshPage());
+    sendRequestJob()
     registerWebsocketInfo();
 });
 
@@ -280,16 +280,17 @@ async function sendRequestJob() {
             headers: { 'Content-Type': 'application/json' },
         })
         .then(async response => {
-            if (response.status == 404) {
+            console.log("12345");
+            console.log(response.status);
+            if (response.status != 200) {
                 let message = await response.text();
                 console.error("Error:", message);
-                alert("Unsupported sort field");
             }
-            else if (response.status != 200) {
-                window.location.href = '/login';
-            } else {
+            else {
                 const result = await response.json();
+                console.log(result);
                 saveData(result);
+                refreshPage();
             }
         })
         .catch(err => {
@@ -331,6 +332,7 @@ async function sendRequestData() {
                 else {
                     const result = await response.json();
                     saveData(result);
+                    refreshPage();
                 }
             })
             .catch(err => {
@@ -599,6 +601,7 @@ async function sendRequestModelDetail(modelId) {
                 else {
                     const result = await response.json();
                     saveDataDetail(result);
+                    refreshModelDetail(modelId);
                 }
             })
             .catch(err => {
