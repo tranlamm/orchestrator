@@ -95,7 +95,7 @@ public class UserController {
                 .build();
 
         Map<String, String> params = new HashMap<>();
-        params.put("redirectUrl", "/home");
+        params.put("redirectUrl", "/home/train");
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(new BaseResponse(params));
     }
 

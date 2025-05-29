@@ -9,7 +9,7 @@ let stompClient = null;
 
 /** ________________ CHANGE PAGE ________________ */
 function viewFinishedJob() {
-    window.location.href = '/home_done';
+    window.location.href = '/home/done';
 }
 
 /** ________________ SHOW POPUP ________________ */

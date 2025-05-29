@@ -8,7 +8,7 @@ let mapDataDetails = {};
 
 /** ________________ CHANGE PAGE ________________ */
 function viewTrainingJob() {
-    window.location.href = '/home_train';
+    window.location.href = '/home/train';
 }
 
 /** ________________ SHOW SORT DROPDOWN ________________ */

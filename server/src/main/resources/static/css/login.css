@@ -52,6 +52,10 @@ body {
     border-color: orange !important;
 }
 
+.form-control {
+    font-size: 14px;
+}
+
 .error-message {
     color: red;
     background: none;
