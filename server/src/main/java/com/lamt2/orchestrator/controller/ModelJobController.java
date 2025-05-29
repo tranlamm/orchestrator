@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +43,7 @@ public class ModelJobController {
             responseCode = "400",
             description = "Missing field in request body"
     )
-    @PostMapping("/new_job")
+    @PostMapping(value = "/new_job", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BaseResponse> createNewJob(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Job parameter of new model training job",

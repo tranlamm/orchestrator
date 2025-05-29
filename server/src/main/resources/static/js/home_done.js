@@ -43,7 +43,7 @@ function sortBy(field) {
     dropdown.classList.add('d-none');
     if (currentSortField == field) return;
     currentSortField = field;
-    sendRequestData().then(r => refreshPage());
+    sendRequestData();
 }
 
 function setIsIncrease(isAscending) {
@@ -51,7 +51,7 @@ function setIsIncrease(isAscending) {
     dropdown.classList.add('d-none');
     if (currentIsAscending == isAscending) return;
     currentIsAscending = isAscending;
-    sendRequestData().then(r => refreshPage());
+    sendRequestData();
 }
 
 /** ________________ SHOW MODEL DETAIL ________________ */
@@ -66,7 +66,7 @@ function toggleDetails(button) {
         if (mapDataDetails[modelId] != null) {
             refreshModelDetail(modelId);
         }
-        sendRequestModelDetail(modelId).then(r => refreshModelDetail(modelId));
+        sendRequestModelDetail(modelId);
     } else {
         detailsDiv.classList.add('d-none');
         button.textContent = '▼';
@@ -77,7 +77,7 @@ function toggleDetails(button) {
 function changePage(page) {
     if (currentPage == page) return;
     currentPage = page;
-    sendRequestData().then(r => refreshPage());
+    sendRequestData();
 }
 
 function renderPagination(totalPages, currentPage) {
@@ -238,7 +238,7 @@ function drawCharts(accCanvas, lossCanvas, modelId, newData) {
 
 /** ________________ FIRST LOAD ________________ */
 document.addEventListener('DOMContentLoaded', () => {
-    sendRequestJob().then(r => refreshPage());
+    sendRequestJob();
 });
 
 async function sendRequestJob() {
@@ -247,20 +247,21 @@ async function sendRequestJob() {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         })
-        .then(async response => {
-            if (response.status != 200) {
-                let message = await response.text();
-                console.error("Error:", message);
-            }
-            else {
-                const result = await response.json();
-                saveData(result);
-            }
-        })
-        .catch(err => {
-            console.error("Error:", err);
-            alert("Something went wrong");
-        });
+            .then(async response => {
+                if (response.status != 200) {
+                    let message = await response.text();
+                    console.error("Error:", message);
+                }
+                else {
+                    const result = await response.json();
+                    saveData(result);
+                    refreshPage();
+                }
+            })
+            .catch(err => {
+                console.error("Error:", err);
+                alert("Something went wrong");
+            });
     }
     catch (err) {
         console.error("Error:", err);
@@ -291,11 +292,11 @@ async function sendRequestData() {
                 if (response.status != 200) {
                     let message = await response.text();
                     console.error("Error:", message);
-                    alert("Unsupported sort field");
                 }
                 else {
                     const result = await response.json();
                     saveData(result);
+                    refreshPage();
                 }
             })
             .catch(err => {
@@ -549,11 +550,11 @@ async function sendRequestModelDetail(modelId) {
                 if (response.status != 200) {
                     let message = await response.text();
                     console.error("Error:", message);
-                    alert("Something went wrong");
                 }
                 else {
                     const result = await response.json();
                     saveDataDetail(result);
+                    refreshModelDetail(modelId);
                 }
             })
             .catch(err => {

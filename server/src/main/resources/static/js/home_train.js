@@ -117,6 +117,8 @@ function renderPagination(totalPages, currentPage) {
         return btn;
     };
 
+    if (totalPages == null) totalPages = 1;
+
     // Prev button
     if (currentPage > 1) {
         container.appendChild(createBtn('Prev', currentPage - 1));

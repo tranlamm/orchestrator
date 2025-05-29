@@ -48,7 +48,7 @@ public class ModelQueryController {
             responseCode = "404",
             description = "Unsupported sort field"
     )
-    @GetMapping("/result/all")
+    @GetMapping(value = "/result/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PaginatedModelSummaryResponse> getAllModelSummary(
             @Parameter(
                     name = "page index",
@@ -92,7 +92,7 @@ public class ModelQueryController {
             responseCode = "404",
             description = "Model not found"
     )
-    @GetMapping("/result/{modelId}")
+    @GetMapping(value = "/result/{modelId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ModelDetailResponse> getModelDetail(
             @Parameter(
                     name = "model id",
@@ -164,7 +164,7 @@ public class ModelQueryController {
             responseCode = "404",
             description = "Model training result detail not found"
     )
-    @GetMapping("/training/{modelId}")
+    @GetMapping(value = "/training/{modelId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ModelDetailResponse> getModelTrainingDetail(
             @Parameter(
                     name = "model id",

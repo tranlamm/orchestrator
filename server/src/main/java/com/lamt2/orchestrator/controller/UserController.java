@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -56,7 +57,7 @@ public class UserController {
             responseCode = "404",
             description = "Wrong username or password"
     )
-    @PostMapping("/login")
+    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<BaseResponse> login(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -100,9 +101,7 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String loginPage() {
-        return "login";
-    }
+    public String loginPage() { return "login"; }
 
     @GetMapping("/home/train")
     public String homeTrainPage() {
