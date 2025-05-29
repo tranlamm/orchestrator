@@ -3,6 +3,7 @@ package com.lamt2.orchestrator.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
@@ -48,6 +49,12 @@ public class UserEntity {
     }
 
     public UserEntity() {
+    }
+
+    public UserEntity(Long id, String username, String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
     }
 
     public void setId(Long id) {
