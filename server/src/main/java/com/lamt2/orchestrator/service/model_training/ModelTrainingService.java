@@ -179,8 +179,8 @@ public class ModelTrainingService {
                 ModelTrainingInfo modelTrainingInfo = new ModelTrainingInfo();
                 modelTrainingInfo.setEpochIdx(Integer.parseInt(trainingData.get("epochIdx")));
                 modelTrainingInfo.setBatchIdx(Integer.parseInt(trainingData.get("batchIdx")));
-                modelTrainingInfo.setLoss(Integer.parseInt(trainingData.get("loss")));
-                modelTrainingInfo.setAccuracy(Integer.parseInt(trainingData.get("accuracy")));
+                modelTrainingInfo.setLoss(Float.parseFloat(trainingData.get("loss")));
+                modelTrainingInfo.setAccuracy(Float.parseFloat(trainingData.get("accuracy")));
                 modelTrainingInfoList.add(modelTrainingInfo);
             }
 
