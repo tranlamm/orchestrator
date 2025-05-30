@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Model Training Jobs</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css/animate.min.css">
+        <link rel="stylesheet" href="./css/home_train.css">
+    </head>
+    <body>
+        <div class="job-container">
+            <div class="w-80 mb-4 text-center position-relative">
+                <h4 class="text-orange">Training Job Status</h4>
+                <div class="position-absolute bottom-0 end-0 d-flex justify-content-end align-items-center gap-3">
+                    <button class="btn btn-orange_type btn-sm " onclick="viewFinishedJob()">View finished job</button>
+                    <div class="dropdown-custom1 position-relative">
+                        <button id="sortToggleButton" class="btn btn-orange_type btn-sm" onclick="toggleSortDropdown()">Sort</button>
+                        <div id="sortDropdown" class="sort-dropdown d-none">
+                            <div class="dropdown-arrow"></div> <!-- Arrow element -->
+                            <div class="dropdown-item" onclick="sortBy('accuracy')">Accuracy</div>
+                            <div class="dropdown-item" onclick="sortBy('loss')">Loss</div>
+                            <div class="dropdown-item" onclick="sortBy('epoch')">Total epoch</div>
+                            <div class="dropdown-item" onclick="sortBy('startTime')">Start Time</div>
+                            <div class="dropdown-item" onclick="sortBy('progress')">Progress</div>
+                        </div>
+                    </div>
+                    <div class="dropdown-custom2 position-relative">
+                        <button id="orderToggleButton" class="btn btn-orange_type btn-sm" onclick="toggleOrderDropdown()">Order by</button>
+                        <div id="orderDropdown" class="order-dropdown d-none">
+                            <div class="dropdown-arrow"></div> <!-- Arrow element -->
+                            <div class="dropdown-item" onclick="setIsIncrease(true)">Increase</div>
+                            <div class="dropdown-item" onclick="setIsIncrease(false)">Decrease</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-orange_type btn-sm " onclick="showPopup()">+ New Job</button>
+                </div>
+            </div>
+
+            <div id="job_card_container"></div>
+
+            <div id="pagination" class="d-flex justify-content-center align-items-center gap-2 mt-4 flex-wrap"></div>
+        </div>
+
+
+        <!-- Popup Overlay -->
+        <div id="popupOverlay" class="popup-overlay d-none">
+            <div class="popup-form animate__animated animate__zoomIn">
+                <h4 class="text-orange mb-3">Start New Job</h4>
+                <form onsubmit="submitNewJob(event)">
+                    <div class="form-group mb-3">
+                        <label class="text-white">Epoch</label>
+                        <input type="number" class="form-control" name="epoch" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="text-white">Batch Size</label>
+                        <input type="number" class="form-control" name="batchSize" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="text-white">Learning Rate</label>
+                        <input type="number" step="0.0001" class="form-control" name="learningRate" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="text-white">Log Interval</label>
+                        <input type="number" class="form-control" name="logInterval" required>
+                    </div>
+                    <div id="formError" class="text-danger text-center d-none mb-3">Please fill all fields correctly.</div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-orange">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script src="./js/home_train.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    </body>
+</html>
