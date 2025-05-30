@@ -275,6 +275,48 @@ document.addEventListener('DOMContentLoaded', () => {
     registerWebsocketInfo();
 });
 
+async function submitNewJob(event) {
+    event.preventDefault();
+
+    const epoch = document.querySelector('input[name="epoch"]').value;
+    const batchSize = document.querySelector('input[name="batchSize"]').value;
+    const learningRate = document.querySelector('input[name="learningRate"]').value;
+    const logInterval = document.querySelector('input[name="logInterval"]').value;
+
+    const data = {
+        "epochs": epoch,
+        "batchSize": batchSize,
+        "learningRate": learningRate,
+        "logIntervals": logInterval
+    }
+
+    try {
+        fetch('/api/admin/model/new_job', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(async response => {
+            if (response.status != 200) {
+                let message = await response.text();
+                console.log(message);
+            } else {
+                const result = await response.json();
+                console.log(result);
+                hidePopup();
+            }
+        })
+        .catch(err => {
+            console.error("Error:", err);
+            alert("Something went wrong");
+        });
+    }
+    catch (err) {
+        console.error("Error:", err);
+        alert("Something went wrong");
+    }
+}
+
 async function sendRequestJob() {
     try {
         fetch('/api/view/model/training/all', {
@@ -282,8 +324,6 @@ async function sendRequestJob() {
             headers: { 'Content-Type': 'application/json' },
         })
         .then(async response => {
-            console.log("12345");
-            console.log(response.status);
             if (response.status != 200) {
                 let message = await response.text();
                 console.error("Error:", message);

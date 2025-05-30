@@ -32,4 +32,20 @@ public class PaginatedModelSummaryResponse {
     public void setSizePerPage(int sizePerPage) {
         this.sizePerPage = sizePerPage;
     }
+
+    public List<ModelSummaryResponse> getResults() {
+        return results;
+    }
+
+    public int getPageIdx() {
+        return pageIdx;
+    }
+
+    public int getNumPage() {
+        return numPage;
+    }
+
+    public int getSizePerPage() {
+        return sizePerPage;
+    }
 }

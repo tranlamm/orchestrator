@@ -47,7 +47,7 @@ public class SQLRepositoryTest {
 
     @Test
     public void testUserRepository() throws Exception {
-        UserEntity user = new UserEntity(1L, "username", "password");
+        UserEntity user = new UserEntity(1L, "username", "$2a$10$heattYG3az8p91InycGqmu22NwfFjzNKKKiBQ/.xte9oFxoCyYo3O");
         List<RoleEntity> listRole = Arrays.asList(new RoleEntity(1L, "ROLE_ADMIN"), new RoleEntity(2L, "ROLE_USER"));
         Mockito.when(userRepository.findByUsername("username")).thenReturn(user);
         Mockito.when(userRepository.findAllUserRole("username")).thenReturn(listRole.stream().map(RoleEntity::getName).collect(Collectors.toList()));
