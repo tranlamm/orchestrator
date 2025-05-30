@@ -2,10 +2,13 @@ package com.lamt2.orchestrator.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "user_role")
 public class UserRoleEntity {
     @Id

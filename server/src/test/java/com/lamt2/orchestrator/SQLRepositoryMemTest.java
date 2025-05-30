@@ -5,15 +5,10 @@ import com.lamt2.orchestrator.controller.UserController;
 import com.lamt2.orchestrator.entity.RoleEntity;
 import com.lamt2.orchestrator.entity.UserEntity;
 import com.lamt2.orchestrator.entity.UserRoleEntity;
-import com.lamt2.orchestrator.repository.ModelResultRepository;
 import com.lamt2.orchestrator.repository.UserRepository;
 import com.lamt2.orchestrator.request.RequestLogin;
-import com.lamt2.orchestrator.response.ModelSummaryResponse;
-import com.lamt2.orchestrator.response.PaginatedModelSummaryResponse;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -26,10 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -50,7 +42,7 @@ public class SQLRepositoryMemTest {
 
     @Test
     public void testUserRepository() throws Exception {
-        UserEntity user = new UserEntity(1L, "username", "password");
+        UserEntity user = new UserEntity(1L, "username", "$2a$10$heattYG3az8p91InycGqmu22NwfFjzNKKKiBQ/.xte9oFxoCyYo3O");
         entityManager.persistAndFlush(user);
         RoleEntity roleEntity = new RoleEntity(1L, "ROLE_ADMIN");
         entityManager.persistAndFlush(roleEntity);

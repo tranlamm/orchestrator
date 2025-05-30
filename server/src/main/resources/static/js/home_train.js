@@ -282,8 +282,6 @@ async function sendRequestJob() {
             headers: { 'Content-Type': 'application/json' },
         })
         .then(async response => {
-            console.log("12345");
-            console.log(response.status);
             if (response.status != 200) {
                 let message = await response.text();
                 console.error("Error:", message);
