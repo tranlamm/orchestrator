@@ -65,10 +65,10 @@ parser.add_argument('--logIntervals')
 args = parser.parse_args()
 
 model_id = args.modelId
-n_epochs = args.epochs
-batch_size_train = args.batchSize
-learning_rate = args.learningRate
-log_interval = args.logIntervals
+n_epochs = int(args.epochs)
+batch_size_train = int(args.batchSize)
+learning_rate = float(args.learningRate)
+log_interval = int(args.logIntervals)
 batch_size_test = 1000
 
 random_seed = 93
