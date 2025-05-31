@@ -38,7 +38,7 @@ public class MongoDBServiceTest {
         modelResult.setModelId("001");
         modelResult.setStartTime(1748533920911L);
         modelResult.setEndTime(1748533921911L);
-        ModelParam modelParam = new ModelParam(10, 0.001, 64, 100);
+        ModelParam modelParam = new ModelParam(10, 0.001f, 64, 100);
         modelResult.setParam(modelParam);
         modelResult.setLogInterval(10);
         modelResult.setTrainingInfo(new ArrayList<>());

@@ -232,8 +232,8 @@ public class ModelTrainingService {
                     curBatchIdx,
                     Integer.parseInt(mapParam.get("numEpoch")),
                     Integer.parseInt(mapParam.get("totalBatch")),
-                    Float.parseFloat(mapTrainingData.getOrDefault("accuracy", ConstantValue.STRING_ZERO)),
-                    Float.parseFloat(mapTrainingData.getOrDefault("loss", ConstantValue.STRING_ZERO))
+                    Float.parseFloat(mapTrainingData != null ? mapTrainingData.getOrDefault("accuracy", ConstantValue.STRING_ZERO) : ConstantValue.STRING_ZERO),
+                    Float.parseFloat(mapTrainingData != null ? mapTrainingData.getOrDefault("loss", ConstantValue.STRING_ZERO) : ConstantValue.STRING_ZERO)
             );
             list.add(modelTrainingSummaryResponse);
         }

@@ -27,13 +27,14 @@ public class MongoDBServiceMemTest {
 
     @Test
     public void testMongoService() {
+        modelResultRepository.deleteAll();
         List<ModelResult> list = new ArrayList<>();
         for (int i = 0; i < 101; ++i) {
             ModelResult modelResult = new ModelResult();
             modelResult.setModelId("00" + i);
             modelResult.setStartTime(1748533920911L);
             modelResult.setEndTime(1748533920911L + i);
-            ModelParam modelParam = new ModelParam(10, 0.001, 64, 100);
+            ModelParam modelParam = new ModelParam(10, 0.001f, 64, 100);
             modelResult.setParam(modelParam);
             modelResult.setLogInterval(10);
             modelResult.setTrainingInfo(new ArrayList<>());
@@ -44,10 +45,10 @@ public class MongoDBServiceMemTest {
         }
         modelResultRepository.saveAll(list);
 
-        PaginatedModelSummaryResponse paginatedModelSummaryResponse = modelResultRepository.findAllSortedByDuration(8, true, "duration");
-        Assertions.assertEquals(11, paginatedModelSummaryResponse.getNumPage());
+        PaginatedModelSummaryResponse paginatedModelSummaryResponse = modelResultRepository.findAllSortedByDuration(8, false, "duration");
         Assertions.assertEquals(10, paginatedModelSummaryResponse.getSizePerPage());
+        Assertions.assertEquals(11, paginatedModelSummaryResponse.getNumPage());
         Assertions.assertEquals(8, paginatedModelSummaryResponse.getPageIdx());
-        Assertions.assertEquals("0030", paginatedModelSummaryResponse.getResults().get(0).getModelId());
+        Assertions.assertEquals("0020", paginatedModelSummaryResponse.getResults().get(0).getModelId());
     }
 }

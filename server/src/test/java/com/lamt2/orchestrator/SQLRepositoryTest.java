@@ -1,22 +1,21 @@
 package com.lamt2.orchestrator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lamt2.orchestrator.controller.UserController;
 import com.lamt2.orchestrator.entity.RoleEntity;
 import com.lamt2.orchestrator.entity.UserEntity;
 import com.lamt2.orchestrator.repository.UserRepository;
 import com.lamt2.orchestrator.request.RequestLogin;
-import org.hamcrest.Matchers;
+import com.lamt2.orchestrator.service.security.CustomUserDetailService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -28,22 +27,17 @@ import java.util.stream.Collectors;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@Import(SQLRepositoryTest.SQLRepositoryTestConfiguration.class)
-@WebMvcTest(UserController.class)
+@AutoConfigureMockMvc
 public class SQLRepositoryTest {
-    @TestConfiguration
-    public static class SQLRepositoryTestConfiguration {
-        @Bean
-        public UserRepository userRepository() {
-            return Mockito.mock(UserRepository.class);
-        }
-    }
 
-    @Autowired
+    @MockBean
     UserRepository userRepository;
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    CustomUserDetailService customUserDetailService;
 
     @Test
     public void testUserRepository() throws Exception {
@@ -51,6 +45,12 @@ public class SQLRepositoryTest {
         List<RoleEntity> listRole = Arrays.asList(new RoleEntity(1L, "ROLE_ADMIN"), new RoleEntity(2L, "ROLE_USER"));
         Mockito.when(userRepository.findByUsername("username")).thenReturn(user);
         Mockito.when(userRepository.findAllUserRole("username")).thenReturn(listRole.stream().map(RoleEntity::getName).collect(Collectors.toList()));
+
+        UserDetails userDetails = customUserDetailService.loadUserByUsername("username");
+        List<GrantedAuthority> grantedAuthorityList = (List<GrantedAuthority>) userDetails.getAuthorities();
+        grantedAuthorityList.forEach(e -> System.out.println(e.getAuthority()));
+        System.out.println(userDetails.getUsername() + " " + userDetails.getPassword());
+
         ObjectMapper objectMapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders.post("/login")
                         .contentType(MediaType.APPLICATION_JSON)

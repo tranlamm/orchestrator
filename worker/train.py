@@ -210,7 +210,7 @@ def sendModelEndInfo(end_time, test_acc, test_loss, f1_score):
   sendKafka(topic_end, json.dumps(data))
   
 def initTrain():
-  timestamp_seconds = int(time.time())
+  timestamp_seconds = int(time.time()) * 1000
   sendModelInitInfo(timestamp_seconds)
   
 def processTrain():
@@ -220,7 +220,7 @@ def processTrain():
     sendModelValidationInfo(epoch+1, val_acc, val_loss)
     
 def endTrain():
-  timestamp_seconds = int(time.time())
+  timestamp_seconds = int(time.time()) * 1000
   loss, acc, f1 = evaluate(test_loader)
   sendModelEndInfo(timestamp_seconds, acc, loss, f1)
 

@@ -5,13 +5,18 @@ import com.lamt2.orchestrator.repository.ModelResultRepository;
 import com.lamt2.orchestrator.response.ModelSummaryResponse;
 import com.lamt2.orchestrator.response.PaginatedModelSummaryResponse;
 import com.lamt2.orchestrator.service.model_query.ModelQueryService;
+import com.lamt2.orchestrator.service.model_training.ModelTrainingService;
+import com.mongodb.client.gridfs.GridFSBucket;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -25,27 +30,14 @@ import java.util.Collections;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@Import(ModelQueryControllerTest.ModelQueryControllerConfiguration.class)
-@WebMvcTest(ModelQueryController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class ModelQueryControllerTest {
     @Autowired
     public MockMvc mockMvc;
 
-    @TestConfiguration
-    public static class ModelQueryControllerConfiguration {
-        @Bean
-        public ModelQueryService modelQueryService() {
-            return new ModelQueryService();
-        }
-
-        @Bean
-        public ModelResultRepository modelResultRepository() {
-            return Mockito.mock(ModelResultRepository.class);
-        }
-    }
-
-    @Autowired
-    private ModelResultRepository modelResultRepository;
+    @MockBean
+    public ModelResultRepository modelResultRepository;
 
     @Test
     public void testModelQuery() throws Exception {

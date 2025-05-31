@@ -26,7 +26,7 @@ public class ModelTrainingSummaryResponse {
         this.currentLoss = currentLoss;
         int totalBatch = this.totalEpoch * this.numBatchPerEpoch;
         int numBatchDone = Math.max(this.currentEpochIdx - 1, 0) * this.numBatchPerEpoch + this.currentBatchIdx;
-        this.progress = MathUtils.roundFloat((float) numBatchDone / totalBatch);
+        this.progress = MathUtils.roundFloat((float) numBatchDone / totalBatch * 100);
     }
 
     public String getModelId() {

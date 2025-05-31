@@ -14,7 +14,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -23,39 +25,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-@Import({KafkaServiceTest.KafkaServiceTestConfiguration.class, KafkaConsumerConfig.class, KafkaProducerConfiguration.class})
+@SpringBootTest
 @TestPropertySource("classpath:application-test.properties")
 @ActiveProfiles("test")
 public class KafkaServiceTest {
-
-    @TestConfiguration
-    public static class KafkaServiceTestConfiguration {
-        @Bean
-        public KafkaService kafkaService() {
-            return new KafkaService();
-        }
-
-        @Bean
-        public ObjectMapper objectMapper() {
-            return new ObjectMapper();
-        }
-
-        @Bean
-        public ModelTrainingService modelTrainingService() {
-            return Mockito.mock(ModelTrainingService.class);
-        }
-
-        @Bean
-        public WebSocketService webSocketService() {
-            return Mockito.mock(WebSocketService.class);
-        }
-
-        @Bean
-        public ModelQueryService modelQueryService() {
-            return Mockito.mock(ModelQueryService.class);
-        }
-    }
-
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
@@ -65,13 +38,13 @@ public class KafkaServiceTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
+    @MockBean
     private ModelTrainingService modelTrainingService;
 
-    @Autowired
+    @MockBean
     private WebSocketService webSocketService;
 
-    @Autowired
+    @MockBean
     private ModelQueryService modelQueryService;
 
     @Test

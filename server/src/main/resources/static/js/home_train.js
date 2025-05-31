@@ -195,7 +195,8 @@ function drawCharts(accCanvas, lossCanvas, modelId, newData) {
                             text: 'Batch Number',
                             color: 'white'
                         },
-                        ticks: { color: '#ccc' }
+                        ticks: { color: '#ccc' },
+                        type: 'linear'
                     },
                     y: {
                         title: {
@@ -241,7 +242,8 @@ function drawCharts(accCanvas, lossCanvas, modelId, newData) {
                             text: 'Batch Number',
                             color: 'white'
                         },
-                        ticks: { color: '#ccc' }
+                        ticks: { color: '#ccc' },
+                        type: 'linear'
                     },
                     y: {
                         title: {
@@ -642,6 +644,7 @@ async function sendRequestModelDetail(modelId) {
                 }
                 else {
                     const result = await response.json();
+                    console.log(result);
                     saveDataDetail(result);
                     refreshModelDetail(modelId);
                 }
@@ -718,7 +721,7 @@ function receiveModelTrain(data) {
         if (progressBar) {
             let totalBatch = mapData.info[data.modelId].totalEpoch * mapData.info[data.modelId].numBatchPerEpoch;
             let numBatchDone = Math.max(mapData.info[data.modelId].currentEpochIdx - 1, 0) * mapData.info[data.modelId].numBatchPerEpoch + mapData.info[data.modelId].currentBatchIdx;
-            let progress = Math.round(numBatchDone / totalBatch * 100) / 100;
+            let progress = Math.round(numBatchDone / totalBatch * 10000) / 100;
             progressBar.style.width = progress + '%';
             progressBar.textContent = progress + '%';
         }

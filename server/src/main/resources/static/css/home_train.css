@@ -21,7 +21,6 @@ body::-webkit-scrollbar {
 }
 
 .job-card {
-    width: 80%;
     height: auto;
     background-color: #111;
     border-left: 5px solid orange;
@@ -30,6 +29,10 @@ body::-webkit-scrollbar {
     padding: 15px 20px;
     margin-bottom: 20px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#job_card_container {
+    min-width: 900px;
 }
 
 .job-card:hover {

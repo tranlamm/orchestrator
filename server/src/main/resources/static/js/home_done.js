@@ -171,7 +171,8 @@ function drawCharts(accCanvas, lossCanvas, modelId, newData) {
                             text: 'Batch Number',
                             color: 'white'
                         },
-                        ticks: { color: '#ccc' }
+                        ticks: { color: '#ccc' },
+                        type: 'linear'
                     },
                     y: {
                         title: {
@@ -217,7 +218,8 @@ function drawCharts(accCanvas, lossCanvas, modelId, newData) {
                             text: 'Batch Number',
                             color: 'white'
                         },
-                        ticks: { color: '#ccc' }
+                        ticks: { color: '#ccc' },
+                        type: 'linear'
                     },
                     y: {
                         title: {
