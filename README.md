@@ -1,6 +1,6 @@
 # Distributed Model Training System
 
-#### This project is a distributed system for training machine learning models. It consists of two main components: `server` and `worker`. The system is designed to orchestrate model training tasks, manage training results, and provide real-time updates on the training status. Additionally, it supports dynamic scaling of `worker nodes` to efficiently handle increased training workloads and accelerate the training process.
+This project is a distributed system for training machine learning models. It consists of two main components: `server` and `worker`. The system is designed to orchestrate model training tasks, manage training results, and provide real-time updates on the training status. Additionally, it supports dynamic scaling of `worker nodes` to efficiently handle increased training workloads and accelerate the training process.
 
 ## Project Structure
 
