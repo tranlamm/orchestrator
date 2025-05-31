@@ -12,16 +12,24 @@
                 <h4 class="text-orange">Finished Job Result</h4>
                 <div class="position-absolute bottom-0 end-0 d-flex justify-content-end align-items-center gap-3">
                     <button class="btn btn-orange_type btn-sm " onclick="viewTrainingJob()">View training job</button>
-                    <div class="dropdown-custom position-relative">
+                    <div class="dropdown-custom1 position-relative">
                         <button id="sortToggleButton" class="btn btn-orange_type btn-sm" onclick="toggleSortDropdown()">Sort</button>
                         <div id="sortDropdown" class="sort-dropdown d-none">
                             <div class="dropdown-arrow"></div> <!-- Arrow element -->
-                            <div class="dropdown-item" onclick="sortBy('accuracy')">Accuracy</div>
-                            <div class="dropdown-item" onclick="sortBy('loss')">Loss</div>
-                            <div class="dropdown-item" onclick="sortBy('f1Score')">F1 score</div>
-                            <div class="dropdown-item" onclick="sortBy('startTime')">Started Time</div>
-                            <div class="dropdown-item" onclick="sortBy('endTime')">Ended Time</div>
-                            <div class="dropdown-item" onclick="sortBy('duration')">Duration</div>
+                            <div class="dropdown-item" onclick="sortBy('accuracy', 'Accuracy')">Accuracy</div>
+                            <div class="dropdown-item" onclick="sortBy('loss', 'Loss')">Loss</div>
+                            <div class="dropdown-item" onclick="sortBy('f1Score', 'F1 score')">F1 score</div>
+                            <div class="dropdown-item" onclick="sortBy('startTime', 'Started Time')">Started Time</div>
+                            <div class="dropdown-item" onclick="sortBy('endTime', 'Ended Time')">Ended Time</div>
+                            <div class="dropdown-item" onclick="sortBy('duration', 'Duration')">Duration</div>
+                        </div>
+                    </div>
+                    <div class="dropdown-custom2 position-relative">
+                        <button id="orderToggleButton" class="btn btn-orange_type btn-sm" onclick="toggleOrderDropdown()">Order by</button>
+                        <div id="orderDropdown" class="order-dropdown d-none">
+                            <div class="dropdown-arrow"></div> <!-- Arrow element -->
+                            <div class="dropdown-item" onclick="setIsIncrease(true)">Increase</div>
+                            <div class="dropdown-item" onclick="setIsIncrease(false)">Decrease</div>
                         </div>
                     </div>
                 </div>

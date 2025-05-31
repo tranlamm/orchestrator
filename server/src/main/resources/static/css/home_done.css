@@ -205,7 +205,7 @@ body::-webkit-scrollbar {
   position: relative;
 }
 
-.sort-dropdown {
+.sort-dropdown, .order-dropdown {
   position: absolute;
   top: 140%;
   right: 0;
@@ -245,13 +245,13 @@ body::-webkit-scrollbar {
   z-index: -1;
 }
 
-.sort-dropdown .dropdown-item {
+.sort-dropdown .dropdown-item, .order-dropdown .dropdown-item{
   padding: 8px 15px;
   color: white;
   cursor: pointer;
 }
 
-.sort-dropdown .dropdown-item:hover {
+.sort-dropdown .dropdown-item:hover, .order-dropdown .dropdown-item:hover {
   background-color: #ff6f00;
   color: white;
 }

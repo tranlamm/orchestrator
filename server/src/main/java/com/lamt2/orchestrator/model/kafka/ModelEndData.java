@@ -12,7 +12,7 @@ public class ModelEndData {
     private long endTime;
 
     @JsonProperty("f1_score")
-    private int f1Score;
+    private float f1Score;
 
     @JsonProperty("test_acc")
     private float accuracy;
@@ -28,7 +28,7 @@ public class ModelEndData {
         return endTime;
     }
 
-    public int getF1Score() {
+    public float getF1Score() {
         return f1Score;
     }
 

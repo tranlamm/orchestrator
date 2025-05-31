@@ -39,7 +39,7 @@ public class CustomModelResultRepositoryImpl implements CustomModelResultReposit
                 .and("end_time").as("endTime")
                 .and("final_result.accuracy").as("accuracy")
                 .and("final_result.loss").as("loss")
-                .and("f1Score").as("f1Score")
+                .and("final_result.f1_score").as("f1Score")
                 .andExpression("end_time - start_time").as("duration");
 
         AggregationOperation aggregationSort = Aggregation.sort(ascending ? Sort.Direction.ASC : Sort.Direction.DESC, sortedField);

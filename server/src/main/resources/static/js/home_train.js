@@ -60,11 +60,13 @@ document.addEventListener('click',  (e) => {
     }
 });
 
-function sortBy(field) {
+function sortBy(field, name) {
     const dropdown = document.getElementById('sortDropdown');
     dropdown.classList.add('d-none');
     if (currentSortField == field) return;
     currentSortField = field;
+    const text = document.getElementById('sortToggleButton');
+    text.textContent = name;
     sendRequestData();
 }
 
@@ -73,6 +75,8 @@ function setIsIncrease(isAscending) {
     dropdown.classList.add('d-none');
     if (currentIsAscending == isAscending) return;
     currentIsAscending = isAscending;
+    const text = document.getElementById('orderToggleButton');
+    text.textContent = isAscending ? "Increase" : "Decrease";
     sendRequestData();
 }
 
@@ -305,6 +309,7 @@ async function submitNewJob(event) {
             } else {
                 const result = await response.json();
                 console.log(result);
+                alert("Send create job successfully. Please wait!");
                 hidePopup();
             }
         })
