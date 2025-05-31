@@ -270,3 +270,32 @@ body::-webkit-scrollbar {
     transform: translateY(0);
   }
 }
+
+.pagination-btn {
+  background-color: #111;
+  border: 1px solid #ff6f00;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  min-width: 38px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.pagination-btn:hover {
+  background-color: #ff6f00;
+  color: #000;
+}
+
+.pagination-btn.active {
+  background-color: #ff6f00;
+  color: #000;
+  font-weight: bold;
+  border: 2px solid #fff;
+}
+
+.pagination-btn.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}

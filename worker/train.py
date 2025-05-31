@@ -138,8 +138,8 @@ def train(epoch):
       sendModelTrainingInfo(
         epoch_idx=epoch,
         batch_idx=batch_idx + 1, 
-        train_acc=round(acc, 2), 
-        train_loss=round(loss.item(), 4),
+        train_acc=acc, 
+        train_loss=loss.item(),
       )
     
 def evaluate(loader):

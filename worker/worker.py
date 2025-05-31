@@ -51,8 +51,8 @@ def process_job(parameter, ch, delivery_tag):
             args.append(str(value))
 
         print(f"[THREAD] Running: {' '.join(args)}")
-        # ch.basic_ack(delivery_tag=delivery_tag)
         subprocess.run(args, check=True)
+        ch.basic_ack(delivery_tag=delivery_tag)
     except Exception as e:
         ch.basic_nack(delivery_tag=delivery_tag, requeue=True)
         

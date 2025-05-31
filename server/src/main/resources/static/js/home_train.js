@@ -493,6 +493,22 @@ function createJobCard(modelId) {
     left.classList.add('flex-fill', 'left-details');
     left.style.flex = '3';
 
+    const detailItems = [
+        ['Epochs:', ''],
+        ['Learning Rate:', ''],
+        ['Batch Size:', ''],
+        ['Accuracy:', ''],
+        ['Loss:', '']
+    ];
+    detailItems.forEach(([label, value]) => {
+        const p = document.createElement('p');
+        const strong = document.createElement('strong');
+        strong.textContent = label + ' ';
+        p.appendChild(strong);
+        p.appendChild(document.createTextNode(value));
+        left.appendChild(p);
+    });
+
     // Right side (charts)
     const right = document.createElement('div');
     right.classList.add('flex-fill');
@@ -534,7 +550,7 @@ function refreshModelDetail(modelId) {
         ['Epochs:', mapDataDetails[modelId].param.numEpoch],
         ['Learning Rate:', mapDataDetails[modelId].param.learningRate],
         ['Batch Size:', mapDataDetails[modelId].param.batchSize],
-        ['Accuracy:', mapData.info[modelId].currentAccuracy],
+        ['Accuracy:', Math.round(mapData.info[modelId].currentAccuracy * 10000) / 100 + "%"],
         ['Loss:', mapData.info[modelId].currentLoss]
     ];
     detailItems.forEach(([label, value]) => {
@@ -697,65 +713,65 @@ function receiveModelInit(data) {
 }
 
 function receiveModelTrain(data) {
-    if (mapData.info[data.modelId]) {
-        mapData.info[data.modelId].currentEpochIdx = Math.max(mapData.info[data.modelId].currentEpochIdx, data.epochIdx);
-        mapData.info[data.modelId].currentBatchIdx = Math.max(mapData.info[data.modelId].currentBatchIdx, data.batchIdx);
-        mapData.info[data.modelId].currentAccuracy = data.accuracy;
-        mapData.info[data.modelId].currentLoss = data.loss;
+    if (mapData.info[data.model_id]) {
+        mapData.info[data.model_id].currentEpochIdx = Math.max(mapData.info[data.model_id].currentEpochIdx, data.epoch_idx);
+        mapData.info[data.model_id].currentBatchIdx = Math.max(mapData.info[data.model_id].currentBatchIdx, data.batch_idx);
+        mapData.info[data.model_id].currentAccuracy = data.train_acc;
+        mapData.info[data.model_id].currentLoss = data.train_loss;
 
         const spans = [
-            ['acc', 'Accuracy: ' + mapData.info[data.modelId].currentAccuracy],
-            ['loss', 'Loss: ' + mapData.info[data.modelId].currentLoss],
-            ['epoch', 'Epoch: ' + mapData.info[data.modelId].currentEpochIdx + "/" + mapData.info[data.modelId].totalEpoch],
-            ['batch', 'Batch: ' + mapData.info[data.modelId].currentBatchIdx + "/" + mapData.info[data.modelId].numBatchPerEpoch],
+            ['acc', 'Accuracy: ' + Math.round(mapData.info[data.model_id].currentAccuracy * 10000) / 100 + "%"],
+            ['loss', 'Loss: ' + mapData.info[data.model_id].currentLoss],
+            ['epoch', 'Epoch: ' + mapData.info[data.model_id].currentEpochIdx + "/" + mapData.info[data.model_id].totalEpoch],
+            ['batch', 'Batch: ' + mapData.info[data.model_id].currentBatchIdx + "/" + mapData.info[data.model_id].numBatchPerEpoch],
         ];
         spans.forEach(arr => {
-            const ele = document.getElementById('job-description_' + arr[0] + "_" + data.modelId);
+            const ele = document.getElementById('job-description_' + arr[0] + "_" + data.model_id);
             if (ele) {
                 ele.textContent = arr[1];
             }
         })
 
          // Progress bar
-        const progressBar = document.getElementById('progress-bar_' + data.modelId);
+        const progressBar = document.getElementById('progress-bar_' + data.model_id);
         if (progressBar) {
-            let totalBatch = mapData.info[data.modelId].totalEpoch * mapData.info[data.modelId].numBatchPerEpoch;
-            let numBatchDone = Math.max(mapData.info[data.modelId].currentEpochIdx - 1, 0) * mapData.info[data.modelId].numBatchPerEpoch + mapData.info[data.modelId].currentBatchIdx;
+            let totalBatch = mapData.info[data.model_id].totalEpoch * mapData.info[data.model_id].numBatchPerEpoch;
+            let numBatchDone = Math.max(mapData.info[data.model_id].currentEpochIdx - 1, 0) * mapData.info[data.model_id].numBatchPerEpoch + mapData.info[data.model_id].currentBatchIdx;
             let progress = Math.round(numBatchDone / totalBatch * 10000) / 100;
             progressBar.style.width = progress + '%';
             progressBar.textContent = progress + '%';
         }
     }
-    if (mapDataDetails[data.modelId]) {
-        mapDataDetails[data.modelId].trainingInfo.push({
-            epochIdx: data.epochIdx,
-            batchIdx: data.batchIdx,
-            accuracy: data.accuracy,
-            loss: data.loss
+    if (mapDataDetails[data.model_id]) {
+        mapDataDetails[data.model_id].trainingInfo.push({
+            epochIdx: data.epoch_idx,
+            batchIdx: data.batch_idx,
+            accuracy: data.train_acc,
+            loss: data.train_loss
         })
-        const detailEle = document.getElementById("job-details_" + data.modelId);
+        const detailEle = document.getElementById("job-details_" + data.model_id);
         if (detailEle && !detailEle.classList.contains('d-none')) {
-            refreshModelDetail(data.modelId);
+            refreshModelDetail(data.model_id);
         }
     }
 }
 
 function receiveModelValidation(data) {
-    if (mapDataDetails[data.modelId]) {
-        mapDataDetails[data.modelId].validationInfo.push({
-            epochIdx: data.epochIdx,
-            accuracy: data.accuracy,
-            loss: data.loss
+    if (mapDataDetails[data.model_id]) {
+        mapDataDetails[data.model_id].validationInfo.push({
+            epochIdx: data.epoch_idx,
+            accuracy: data.val_acc,
+            loss: data.val_loss
         })
-        const detailEle = document.getElementById("job-details_" + data.modelId);
+        const detailEle = document.getElementById("job-details_" + data.model_id);
         if (detailEle && !detailEle.classList.contains('d-none')) {
-            refreshModelDetail(data.modelId);
+            refreshModelDetail(data.model_id);
         }
     }
 }
 
 function receiveModelEnd(data) {
-    const ele = document.getElementById('job-card_' + data.modelId);
+    const ele = document.getElementById('job-card_' + data.model_id);
     if (ele) {
         ele.remove();
     }

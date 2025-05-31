@@ -367,10 +367,10 @@ function createJobCard(modelId) {
     const spans = [
         ['started_time', 'Started time: ' + formatTimestamp(mapData.info[modelId].startTime)],
         ['ended_time', 'Ended time: ' + formatTimestamp(mapData.info[modelId].endTime)],
-        ['acc', 'Accuracy: ' + mapData.info[modelId].accuracy],
+        ['acc', 'Accuracy: ' + Math.round(mapData.info[modelId].accuracy * 10000) / 100 + "%"],
         ['f1_score', 'F1 score: ' + mapData.info[modelId].f1Score],
         ['loss', 'Loss: ' + mapData.info[modelId].loss],
-        ['duration', 'Duration: ' + getDurationFormatted(formatTimestamp(mapData.info[modelId].duration), 0)],
+        ['duration', 'Duration: ' + getDurationFormatted(mapData.info[modelId].duration, 0)],
     ];
     spans.forEach(arr => {
         const span = document.createElement('span');
@@ -403,6 +403,22 @@ function createJobCard(modelId) {
     const left = document.createElement('div');
     left.classList.add('flex-fill', 'left-details');
     left.style.flex = '3';
+
+    const detailItems = [
+        ['Epochs:', ''],
+        ['Learning Rate:', ''],
+        ['Batch Size:', ''],
+        ['Accuracy:', ''],
+        ['Loss:', '']
+    ];
+    detailItems.forEach(([label, value]) => {
+        const p = document.createElement('p');
+        const strong = document.createElement('strong');
+        strong.textContent = label + ' ';
+        p.appendChild(strong);
+        p.appendChild(document.createTextNode(value));
+        left.appendChild(p);
+    });
 
     // Right side (charts)
     const right = document.createElement('div');
@@ -445,7 +461,7 @@ function refreshModelDetail(modelId) {
         ['Epochs:', mapDataDetails[modelId].param.numEpoch],
         ['Learning Rate:', mapDataDetails[modelId].param.learningRate],
         ['Batch Size:', mapDataDetails[modelId].param.batchSize],
-        ['Accuracy:', mapData.info[modelId].accuracy],
+        ['Accuracy:', Math.round(mapData.info[modelId].accuracy * 10000) / 100 + "%"],
         ['F1 score:', mapData.info[modelId].f1Score],
         ['Loss:', mapData.info[modelId].loss],
     ];
@@ -464,7 +480,7 @@ function refreshModelDetail(modelId) {
     let logInterval = mapDataDetails[modelId].logInterval;
     let trainingInfo = mapDataDetails[modelId].trainingInfo;
     let validationInfo = mapDataDetails[modelId].validationInfo;
-    let numBatchPerEpoch = mapData.info[modelId].numBatchPerEpoch;
+    let numBatchPerEpoch = mapDataDetails[modelId].param.numBatchPerEpoch;
 
     drawCharts(accCanvas, lossCanvas, modelId, getChartData(trainingInfo, validationInfo, logInterval, numBatchPerEpoch));
 }
@@ -601,5 +617,5 @@ function getDurationFormatted(t1, t2) {
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
 
-    return days + "d" + hours + "h" + minutes + "m" + seconds + "s";
+    return (days > 0 ? (days + "d") : "") + (hours > 0 ? (hours + "h") : "") + (minutes > 0 ? (minutes + "m") : "") + seconds + "s";
 }

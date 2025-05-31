@@ -117,7 +117,18 @@ public class ModelTrainingService {
     public void receiveModelInitData(ModelInitData modelInitData) {
         String modelId = modelInitData.getModelId();
         boolean isExisted = Boolean.TRUE.equals(redisTemplate.opsForSet().isMember(RedisConfiguration.KEY_MODEL_RUNNING_SET, modelId));
-        if (isExisted) return;
+        if (isExisted) {
+            Map<String, String> mapModelParam = getModelParam(modelId);
+            Map<String, String> mapModelInfo = getModelInfo(modelId);
+            if (mapModelInfo != null && mapModelParam != null) {
+                String logInterval = mapModelParam.get("logInterval");
+                String curEpoch = mapModelInfo.get("currentEpochIdx");
+                String curBatch = mapModelInfo.get("currentBatchIdx");
+                if (logInterval != null && curBatch != null && curEpoch != null) {
+                    this.deleteModelFromRedis(modelId, Integer.parseInt(curEpoch), Integer.parseInt(curBatch), Integer.parseInt(logInterval));
+                }
+            }
+        }
         redisTemplate.opsForSet().add(RedisConfiguration.KEY_MODEL_RUNNING_SET, modelId);
         this.createModelParam(modelInitData);
         this.createModelInfo(modelInitData);

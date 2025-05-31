@@ -41,7 +41,7 @@ public class ModelQueryService {
         Pageable pageable = PageRequest.of(pageIdx, defaultPageSize);
         Page<ModelResult> page = modelResultRepository.findAll(pageable);
         List<ModelSummaryResponse> modelSummaryResponseList = page.getContent().stream().map(modelResult -> new ModelSummaryResponse(
-                modelResult.getId(),
+                modelResult.getModelId(),
                 modelResult.getStartTime(),
                 modelResult.getEndTime(),
                 modelResult.getFinalResult().getAccuracy(),
@@ -59,7 +59,7 @@ public class ModelQueryService {
             throw new ResourceNotFoundException("Model not found: " + modelId);
         }
         return new ModelDetailResponse(
-                modelResult.getId(),
+                modelResult.getModelId(),
                 modelResult.getParam(),
                 modelResult.getLogInterval(),
                 modelResult.getTrainingInfo(),

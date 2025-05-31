@@ -55,7 +55,7 @@ body::-webkit-scrollbar {
 
 .progress-bar {
     background-color: orange;
-    color: black;
+    color: white;
     font-weight: 700;
     font-size: 16px;
     text-shadow: 0 0 2px #fff;
