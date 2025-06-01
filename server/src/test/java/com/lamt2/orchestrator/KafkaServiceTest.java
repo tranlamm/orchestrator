@@ -53,7 +53,7 @@ public class KafkaServiceTest {
         String message = objectMapper.writeValueAsString(modelInitData);
         kafkaTemplate.send("topic_model_init", message);
         // Sleep to allow listener to process
-        Thread.sleep(10000);
+        Thread.sleep(15000);
 
         // Verify that mock service received the call
         ArgumentCaptor<ModelInitData> captor = ArgumentCaptor.forClass(ModelInitData.class);

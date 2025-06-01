@@ -1,0 +1,7 @@
+torch
+torchvision
+confluent-kafka
+scikit-learn
+pymongo
+gridfs
+pika
